@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<title>TeamTalk utilities</title>
+<meta name="author" content="BlindMasters">
+</head>
+<body>
+<h1>Introduction</h1>
+<p>TTUtilities is an advanced, Multifeatured, highly customizable bot for TeamTalk5, It contains many features that enhance server moderation, user engagement, and entertainment capabilities. Developed by <a href="https://blindmasters.org">Blind Masters team</a> , TTUtilities is a free and open-source project, empowering server administrators with a robust toolset to manage their communities effectively</p>
+<p>This bot enhances your TeamTalk server experience by providing a range of moderation, entertainment, and administrative features. It's designed to be easy to use and customize, making it suitable for both casual and serious TeamTalk communities.</p>
+<p>One of the bot's  most powerful features is its advanced moderation capabilities. The bot can automatically detect and handle various user behaviors, such as jailing users with specific usernames or nicknames, kicking or banning users based on nickname length or blacklisted words, and even implementing duration-based bans or kicks.</p>
+<p>Moreover, the bot can facilitate language translation, making it easier for users from diverse backgrounds to connect and communicate effectively. This feature can be enabled for individual users or set to automatically translate channel messages. This allows administrators to maintain a clean and respectful environment within their TeamTalk5 servers with minimal manual intervention.</p>
+<p>TTUtilities also excels in user engagement and entertainment. The bot can send random messages at specified intervals, enriching the server's atmosphere and keeping users engaged. Users can get real-time weather updates, It also has a built-in Wikipedia search function, allowing users to access information directly. Additionally, The bot integrates with a powerful text-to-speech engine, allowing users to have text messages read aloud, including support for language detection and customizable voice settings.</p>
+<p>Beyond its core functionalities, The bot offers a unique private channel feature, enabling two users to create a hidden, password-protected channel for private conversations. Furthermore, the bot includes a media player with YouTube integration, allowing users to play direct links for audio streams, Search in youtube, Downloading videos, And controlling playback, This makes it a multifeatured bot for automation, Moderation, And other tasks.</p>
+<h2>Features</h2>
+<ul>
+<li>Highly customizable configuration file: Allowing administrators to easily create the configuration and configure nearly every feature in the bot.</li>
+<li>VPN or proxy detection, With country restrictions.</li>
+<li>Actions for users with no names.</li>
+<li>Automatically detecting inappropriate language in all channel messages, Names, And channels created by users.</li>
+<li>Lots of commands for moderation, Making some moderation tasks even available on other clients such as android and IOS</li>
+<li>Weather info: Get real-time weather info, Including temperature, Wind info, Cloud, Rain, And local time</li>
+<li>Wikipedia search to get a summary about any topic in wikipedia</li>
+<li>Supports uploading intire html page files about your wikipedia query</li>
+<li>SSH control to execute quick commands on your server</li>
+<li>Advanced text to speech system, with over 100 voices and many customization, and language detection</li>
+<li>Sending random announcements or messages at intervals, completely customizable</li>
+<li>Smart jail system with jail flood protection for users who try to bypass the jail within a specified period.</li>
+<li>Smart duration baced kicking or banning for users.</li>
+<li>Custom exclusion list for usernames, IP addresses and nicknames.</li>
+<li>Automatic translation with 2 customizable modes</li>
+<li>Fully functional media player, With support for downloading videos, Playing direct links, And search in youtube.</li>
+<li>Offline message system for offline users.</li>
+<li>Supports windows and linux.</li>
+</ul>
+<h2>Download</h2>
+<P>There are 2 versions. Please download according to your platform.</p>
+<a href="https://blindmasters.org/TTUtilities/TTUtilities.zip">Download for windows (64 Bit only)</a>
+<a href="https://blindmasters.org/TTUtilities/TTUtilities-linux.zip"> Download for linux</a>
+<h2>Setup</h2>
+<h3>Running on windows using the compiled version</h3>
+<p>Follow the below instructions carefully to avoid any errors.</p>
+<p>After downloading the bot: Decompress the downloaded file. You'll find a subfolder named "windows", Inside it you'll find everything related to the windows version. Click on TTUtilities.exe to start setting up the bot.</p>
+<p>Once you open the bot for the first time: It will open up a friendly GUI to configure bot settings. Please pay attention to each option to avoid undesired behavior.</p>
+<h3>Linux</h3>
+<p>You will need to do some work in order to run the bot on linux, See below.</p>
+<p>Currently: The bot has been tested on ubuntu 22.0 so not sure about other distributions.</p>
+<ul>
+<li>Open the terminal and connect to your ssh server</li>
+<li>Switch to the root account</li>
+<li>Download the file by running the following command</li>
+<p>wget https://blindmasters.org/TTUtilities/TTUtilities-linux.zip</p>
+<li>Extract the downloaded file</li>
+<p>unzip TTUtilities-linux.zip</p>
+<li>Change to the extracted file by running:</li>
+<p>cd linux</p>
+<li>Run the file setup.sh with ./setup.sh. This will install some necessary packages in order for the bot to work correctly</li>
+<li>Run the following command to configure the bot if you don't have a config file:</li>
+<p>python3 TTUtilities.py</p>
+</ul>
+<p>This will start up the bot and guide you to configure it. There are various sections and settings, Please pay attention to avoid undesired behavior.</p>
+<p>Important note: If you want the bot to run in background and starts whenever the server reboots: You can create a service file for the bot, A service file template is included with the bot, You may edit this file as you wish and copy it into /etc/systemd/system directory.</p>
+<h2>Running the bot from source</h3>
+<h3>Directly running on windows</h3>
+<p>Follow the below instructions to setup your bot on windows</p>
+<p>1: Install git, necessary for installing some libraries, Download <a href="https://github.com/git-for-windows/git/releases/download/v2.44.0.windows.1/Git-2.44.0-64-bit.exe" accesskey, download > git 64 bit for windows from here</a></p>
+<a href="https://github.com/git-for-windows/git/releases/download/v2.44.0.windows.1/Git-2.44.0-32-bit.exe" accesskey, download > Download git 32 bit for windows from here</a>
+<p>2: You need to install python. The recommended version is 3.11, Please do not install the latest version as there are some issues with some dependencies in the latest version.</p>
+<a href="https://www.python.org/ftp/python/3.12.2/python-3.12.2-amd64.exe" accesskey, download > Download python V 3.12, 64 bit for windows</a>
+<p>Please note: when installing python: make sure that the option "add python to path" check box is checked to avoid problems, and to make things much easier for you to execute scripts directly thrugh the command prompt.</p>
+<p>3: After completing the above steps: go to the directory where you downloaded the project and open the command prompt in the current directory by: </p>
+<ul>
+<li>Pressing f4, type "cmd" and press enter</li>
+<li>Press the right click button or the application key on an empty space, and choose "Open PowerShell window here", In the new window: type cmd and press enter</li>
+</ul>
+<p>4: Install the requirements file using this command</p>
+<p id="pip">pip install -r requirements.txt</p>
+<p>This will install all libraries needed for the bot, Wait for it to finish, and then you can close this window.</p>
+<h2>Configuring and running the bot</h2>
+<p>weather API: sign up to get one from <a href="https://www.weatherapi.com"> here</a></p>
+<p>The bot will guide you through the configuration process the first time you run it. It will ask you a series of questions to set up the bot's settings. Alternatively, you can use the default config file: "config_default.ini" after you modify it in the bot's directory. This file contains various sections to configure different aspects of the bot's behavior.</p>
+<p>Server section: Server info</p>
+<p>Most options are self explanatory, The only option you may pay attention to is if your server is encrypted</p>
+<p>encrypted: Set to True or choose encrypted when asked if your server uses encryption, otherwise False.</p>
+<p>Exclusion settings: For excluding IP addresses, Usernames, Or nicknames.</p>
+<p>ips: A comma-separated list of IP addresses to exclude from bot actions. Note that the stats IP address is excluded by default.</p>
+<p>Similarly: usernames and nicknames for exclusion section do the same purpose.</p>
+<p>Bot settings: This list has an extensive list of settings for customizing the main bot's features.</p>
+<ul>
+<li>nickname: The nickname the bot will use on the TeamTalk5 server.</li>
+<li>client_name: The client name displayed for the bot (e.g., "TTUtilities Bot").</li>
+<li>gender: Self explanatory.</li>
+<li>default_channel: The channel path the bot will join after logging in. The default  is the root channel: "/".</li>
+<li>channel_password: The password for the default channel (if any).</li>
+<li>status_message: The status message displayed for the bot.</li>
+<li>vpn_detection: Set to True or answer y when asked to enable VPN detection and automatically ban users using VPNs, Otherwise answer n or uncheck the check box if you're using the windows version to disable this feature.</li>
+<li>prevent_noname: Set to True or answer Y when asked to kick users who join without setting a nickname, Otherwise answer n or uncheck the check box to disable this feature.</li>
+<li>noname_note: The message sent to users kicked for not having a nickname. Leave it as default if you disabled this feature.</li>
+<li>intercept_channel_messages: Set to True to intercept all channel messages for all users. Useful for detecting bad words in any channel and enabling certain commands to work regardless of the bot's current channel.</li>
+<li>jail_users: A comma-separated list of usernames to be jailed. These users will be automatically moved to the jail channel.</li>
+<li>jail_names: Similar to jail_users, but this list targets nicknames.</li>
+<li>jail_channel: The channel path to use as the jail.</li>
+<li>jail_timer_seconds: The timeout in seconds for the jail system. If a jailed user tries to join another channel, they will be moved back to the jail, and this timer will start.</li>
+<li>jail_flood_count: The number of times a jailed user can try to leave the jail channel within the jail_timer_seconds before being banned.</li>
+<li>random_message_interval: The time interval in minutes to send random messages from the messages.txt file. Set to 0 or leave it as default to disable.</li>
+<li>char_limit: The maximum allowed nickname length. Users with longer nicknames will be kicked or banned based on char_limit_mode. Set to 0 to disable.</li>
+<li>char_limit_mode: Determines the action taken for exceeding char_limit (1 for Kick, 2 for Ban).</li>
+<li>blacklist_mode: Determines the action taken for using blacklisted words which considered to be inappropriate language (1 for Kick, 2 for Ban).</li>
+<li>video_deletion_timer: The time in minutes after which uploaded videos are automatically deleted. Set to 0 to disable automatic deletion.</li>
+<li>banned_countries: A comma-separated list of countries from which users will be banned.</li>
+</ul>
+<p>Playback related settings:</p>
+<ul>
+<li>input_device: The ID of the audio input device to use. You can get a list of available devices using the bot's audio device selection prompts during the initial configuration.</li>
+<li>output_device: The index of the audio output device to use for playback. Similarly, you can get a list of available devices using the bot's audio device selection prompts during initial configuration.</li>
+<li>seek_step: The amount of time to seek forward or backward in seconds when using the seek commands.</li>
+<li>default_volume: The default playback volume (0-100).</li>
+<li>max_volume: The maximum allowed playback volume. It is set to 100 by default. We generally don't recommend changing this value for normal cases.</li>
+</ul>
+<p>telegram_bot_token: Your Telegram Bot token, which can be obtained by creating a bot using BotFather on Telegram. This is optional and is used for sending notifications to Telegram users. See the relevant section below.</p>
+<p>Weather API key: used for getting real-time weather updates about a user or yourself. You can get one from <a href="https://www.weatherapi.com/" Here ></a></p>
+<p>Remote ssh settings: Completely optional. If you don't want this feature simplly skip this section.</p>
+<ul>
+<li>hostname: The hostname or IP address of your SSH server.</li>
+<li>port: The SSH port number (default is 22).</li>
+<li>username: Your SSH username. We generally don't recommend using a root account for security reasons.</li>
+<li>password: Your SSH password.</li>
+<li>allowed_ips: A comma-separated list of IP addresses that are authorized to execute SSH commands via the bot.</li>
+</ul>
+<p>Account and detection settings:</p>
+<ul>
+<li>detection_mode: Controls which accounts the bot will detect and apply actions to. (1 for Guest Accounts, 2 for All Accounts, 3 for Custom Username Account).</li>
+<ul>
+<li>guest accounts: means that it will only take actions on users who login with the guest account</li>
+<li>All accounts: will detect all accounts and take actions accordingly.</li>
+<li>Custom username: If you have a public account that is different than the guest account: choose this option and enter your public account when configuring the bot</li>
+</ul>
+<li>custom_username: If detection_mode is set to 3, this field specifies the custom username to detect.</li>
+<li>authorized_users: A comma-separated list of usernames authorized to execute certain admin commands.</li>
+<li>detect_server_admins: Set to True or answer Y to automatically detect and add server administrators to the list of authorized users, Otherwise set to False, Answer N or uncheck the check box on windows.</li>
+</ul>
+<p>TeamTalk license: Skip this section if you don't have a license for teamtalk sdk</p>
+<ul>
+<li>license_name: The name associated with your TeamTalk sdk license.</li>
+<li>license_key: The license key for your TeamTalk sdk license.</li>
+</ul>
+<p>Once you do all the configurations: the bot will run, login to your server, and join the root channel</p>
+<h2>Feature explanation</h2>
+<p>Below are explanation for most of the bot's features, Along with their related commands.</p>
+<h3>VPN or proxy detection</h3>
+<p>When enabled: This feature works by querying the IP address of each user when they login. It extracts this info and baced on that: A value is returned from the used API indecading wether if this is a proxy / VPN IP. If so: The bot bans the username associated with IP address.</p>
+<p>Please note: If the username is a guest account or a custom username which you put in the config file: Only the IP address will be banned to prevent unnecessary behavior when banning public accounts.</p>
+<p>This feature now works independently regardless of the detection mode. You can disable it at anytime from the config file by setting the value for "vpn_detection" to False. Also: If you set the detection mode to 3 and do not disable VPN detection: The bot will also still use this feature until you manually disable it.</p>
+<h3>Automated announcements</h3>
+<p>This feature works by getting the content of a defined file in the bot's directory (messages.txt) to define custom messages or announcements that will be sent at specified intervals or periods of time.</p>
+<p>Each message should be on a new line. Multiline messages are not allowed and will be treated as multiple messages. Additionally: You may include a random name in the message by putting {name} at any part of the message. The following example shows how to do that.</p>
+<p>Hello {name}. We're glad that you're here.</p>
+<p>This is the current and only supported variable you may use and it is optional. The file has a set of default messages you may use, or modify.</p>
+<p>Important note: Please do not delete this file. If you wish to disable this feature: You can do so when asked about  "random_message_interval" when creating the config, Or you can manually modify "random_message_interval" and set it to 0. Deleting the intire file may result in an error.</p>
+<h3>No-name inforcement</h3>
+<p>By default: When someone logs in to your server with the default no-name, Or has not set a name: The bot will automatically kick the user after sending a small note in a private message for the reason. This feature can also be disabled, We understand that not everyone know how to change their name, So the bot also allows you to set a custom note that will be sent to users when they enter with no name.</p>
+<h3>Default welcome messages</h3>
+<p>When someone logs in: The bot first does some checks on that user. If nothing is found: E.g not a proxy IP, and not a no-name, The bot sends a welcome message informing the server of where that user is from.</p>
+<p>This feature takes the detection_mode setting into account, If you set the detection_mode to 3 and did not set a custom public user account: The bot will not send these welcome messages, But will still check the users baced on the configuration.</p>
+<h3>Nickname limits</h3>
+<p>Some users may put a very long nickname for several reasons. For example: Spamming, Insulting other users or general using of inappropriate language in their nicknames. For this reason: The bot includes a feature to limit the nickname length and bad words.</p>
+<p>Nickname length inforcement is enabled by default, Unless you set it to 0 to disable it. If you set it to 30 for example: All names exceeding 30 characters will automatically be banned or kicked baced on the configuration. Similarly: The bot checks for bad words in the nickname, So if the nickname doesn't exceed the specified length but includes a bad word: They will be banned or kicked accordingly.</p>
+<p>You can of course customize the black listed words in the bot's directory/blacklist.txt file. Please put each phrase on a new line. Also please do not delete this file. If you wish to completely disable bad words: You may modify this file by deleting it's contents, But not the file itself.</p>
+<h3>Translation modes</h3>
+<p>Private translation mode: Can be enabled by using the command "/pt <source_language> <target_language>. When enabled: All private messages sent to the bot are translated into the specified target language, The bot will send the translated message indecading the name of the sender.</p>
+<p>This is very useful in scenarios when you wish to speak in your native language but don't want to translate each message and copy it using an external tool. Please  note that there is an aproximitly 2 seconds cooldown to prevent abuse.</p>
+<p>Channel translation mode: Can be enabled by using the command "/t <source_language> <target_language>. When enabled: All channel or broadcast messages are translated into the specified target language. There is also a 10 seconds cooldown when enabling or disabling this mode to prevent abuse.</p>
+<h3>Text to speech system</h3>
+<p>The bot has an advanced text-to-speech system that leverages Microsoft voices to provide high-quality, customizable voice synthesis directly within your TeamTalk server. It offers a variety of commands to control the voice, speech rate, pitch, volume, and even language detection. Users can personalize their listening experience and create unique vocal expressions.</p>
+<p>Each user can customize their settings to their needs, And settings are saved for each user independently. Below are the list of related commands.</p>
+<ul>
+<li>/say <text>: Triggers the bot to speak the provided text in the current channel using the default or previously set voice and parameters.</li>
+<p>You can also use ' as an alias for /say command for faster use.</p>
+<li>/voice <voice_name>: Sets the voice name for subsequent text-to-speech. Use /get_voices to discover available options. Each user can set their own preferred voice.</li>
+<li>/get_voices [optional:lang_code]: Displays a list of available voices. If lang_code is provided (e.g., "en-US"), only voices for that language are listed; otherwise, all voices are displayed.</li>
+<p>Please be aware that if you don't provide a language code when using this command: The bot will send too many messages at once. This is due to the fact that there are hundreds of voices for different languages. So please be careful when using this.</p>
+<li>/ld: Toggles automatic language detection for text-to-speech. When active, the bot analyzes the text's language and chooses a voice that best suits it.</li>
+<p>When automatic language is active: The bot will use a random voice matching your language each time you request the bot to speak. If no matching microsoft voice is found: The bot uses google voice to speak in your language.</p>
+<li>/rate <rate_value>: Adjusts the speech rate (speed). rate_value ranges from -100 (slowest) to 100 (fastest).</li>
+<li>/pitch <pitch_value>: Modifies the voice's pitch. pitch_value ranges from -100 (lowest) to 100 (highest).</li>
+<li>/volume <volume_value>: Sets the volume of the synthesized speech. volume_value should be a float between 0.1 (quietest) and 1.0 (loudest).</li>
+</ul>
+<p>Important notes:</p>
+<ul>
+<li>The bot and the user need to be in the same channel. Otherwise the bot will inform the user that they can't use text to speech features outside the bot's channel to prevent abuse. TeamTalk doesn't support streaming to other channels other than the current channel.</li>
+<li>Each user has their own settings for personalized experience: Rate, Pitch, Voice, And volume. Once the user logs out: All settings are deleted to prevent storing settings for none existing users.</li>
+<li>For default settings: The bot uses a default public dictionary for all users until the user manually modifys the value. If someone changed the volume and you still haven't modified anything in your settings: The first time you use the text to speech the bot will use the previously set volume. However: Once you change any value: No one can change it unless you logout and therefore your settings are deleted.</li>
+<li>Use the command "/s" to stop any playing audio or stream. This includes text to speech, Youtube videos, And direct links.</li>
+</ul>
+<h3>Jail system</h3>
+<p>The jail system allows you to designate a specific channel as a "jail" and add usernames to a jail list. Any user whose username is on this list will be automatically moved to the jail channel upon joining the server. This is useful for temporarily isolating troublesome users without resorting to outright bans.</p>
+<p>There are 2 ways to jail someone. Either by using the below commands, Or by editing the config file and specify the list of usernames / nicknames that will be automatically jailed when joining the server.</p>
+<p>Commands:</p>
+<ul>
+<li>/jail <nickname>: Adds the username associated with the specified nickname to the jail list and immediately moves the user to the jail channel.</li>
+<li>/unjail <nickname>: Removes the username associated with the specified nickname from the jail list. The user can then freely move around the server.</li>
+<li>/jails: Displays the list of usernames currently on the jail list.</li>
+</ul>
+<p>Important note: You need to configure the jail_channel path in the config file in order for the jail to work or create a channel for that.</p>
+<h4>Jail flood protection</h4>
+<p>This feature adds an extra layer of control to the jail system. It detects and punishes users who repeatedly attempt to leave the jail channel within a specified timeframe. Here's how it works:</p>
+<ol>
+<li>A user on the jail list attempts to join a channel other than the designated jail.</li>
+<li>The bot immediately moves the user back to the jail channel.</li>
+<li>A timer starts, counting down from the configured jail_timer_seconds (default is 10 seconds).</li>
+<li>Within this timer, each time the user tries to leave again, the attempt is counted.</li>
+<li>If the user's attempt count reaches the jail_flood_count (default is 5) before the timer runs out, the user is banned (by IP or username, depending on the account type) and kicked.</li>
+</ol>
+<p>Note: "jail_timer_seconds": This controls the duration of the timer when a user trys to leave the jail channel. If the timer runs out and the user trys to leave again: The timer and counts will start over.</p>
+<h3>Duration based kick / ban actions:</h3>
+<p>This system allows you to kick or ban users for a specific period, providing more flexibility than permanent actions.</p>
+<p>You need to be in the authorized users list in order to perform the following commands for controling duration based actions.</p>
+<p>When using these commands: The duration has to be in a spicific format explained below. Otherwise the bot will not recognize them.</p>
+<p>When typing the duration: You may split the duration into parts like hours, minutes, seconds, days, weeks, months, and years. Each letter belongs to a time period. When typing multiple durations: You must separate them with a colon : . The following list shows time periods and their characters.</p>
+<ul>
+<li>s: Seconds.</li>
+<li>m: Minutes.</li>
+<li>h: Hours.</li>
+<li>d: Days.</li>
+<li>w: Weeks.</li>
+<li>mo: Months.</li>
+<li>y: Years.</li>
+</ul>
+<p>The duration should be a value, And then a letter for the time period. For example: 5s means a duration of 5 seconds. As said above: You can supply multiple durations. Let's say that you want to ban someone for 5 hours, 48 minutes, and 30 seconds. In this case you will need to supply multiple duration as shown below.</p>
+<p>5h:48m:30s</p>
+<p>The bot will automatically order the duration, So you don't need to worry if you don't type the duration in order. For example: 48m:5h:30s will also work.</p>
+<p>Below are the list of commands for duration based kicking or ban.</p>
+<ul>
+<li>/db <nickname> <duration>: Bans the user with the specified nickname by their IP address for the given duration.</li>
+<li>/udb <nickname> <duration>: Bans the user with the specified nickname by their username for the given duration. If the user is a guest account or is using a custom username, they will be banned by IP instead.</li>
+<li>/dk <nickname> <duration>: Kicks the user with the specified nickname for the given duration. The user will be kicked again if they rejoin within this time.</li>
+<li>/clear <optional_target> will do the following:</li>
+<ul>
+<li>If no target is provided: This command will clear the list of duration kicks and duration bans for all users. Note that this doesn't affect manually banned users.</li>
+<li>If a target is provided: (nickname or username) This command will only clear the duration ban or duration kick for the specified target.</li>
+</ul>
+</ul>
+<h3>Notification and offline message systems</h3>
+<h4>Telegram notification monitor:</h4>
+<p>This feature lets you receive notifications on your Telegram account when a specific user logs into the TeamTalk server. This can be useful for tracking the activity of certain users or for being alerted when friends or colleagues come online.</p>
+<p>In order for this to work correctly: The administrator, Or may be you: Must create a telegram bot by going to <a href="https://t.me/BotFather"> Bot father bot</a> and create a bot there. Just send "/newbot" command and it will guide you to create your bot.</p>
+<p>After you obtain your bot token, Which can be found in the final message after you go thrugh these simple steps: You need to copy this token and put it in the config file of the bot, Or when asked initially. This bot is essential because you can't directly send a telegram message for a target username, The bot is the only way for doing this without logining to your telegram account.</p>
+<p>You also need another bot to get your telegram ID for your account which you can receive notifications on. This is necessary because you can't directly send messages to usernames, You need to get your account ID in order for the bot to successfully send you notifications about a user.</p>
+<p>Unfortunately: The official telegram API doesn't have methods to retrieve the chat ID using a username or any type. There are some alternatives to this but they are too complicated, You can google to learn more. It's just for everyone to be aware of the current possibilities which you can perform using telegram_bot API.</p>
+<p>Please go to <a href="https://t.me/RawDataBot"> Telegram bot raw <a>to get your account ID. Send "/start" to the bot, You'll find your ID in the second message. Make sure to copy your ID correctly.</p>
+<p>There are other ways you can retrieve your account ID, But this is the simplest method for quick use. If you are using "Unigram app" on windows: You can get your telegram ID without having to use external bots.</p>
+<p>Below are the list of commands. They require your telegram ID.</p>
+<ul>
+<li>/notify <nickname> <telegram_chat_id>: Registers a notification request. When the user with the specified nickname logs in, you'll receive a notification message on the Telegram chat with the provided telegram_chat_id.</li>
+<li>/unotify <username> <telegram_chat_id>: Registers a notification for a specific user by their username instead of their nickname. Useful when you want to be notified even if the user changes their nickname.</li>
+</ul>
+<p>Example: /notify Friend123 123456789: You will receive a notification on Telegram when the user "Friend123" logs into the server. The message will be sent to the chat with ID 123456789.</p>
+<h4>Offline messaging system:</h4>
+<p>This system provides a way to send messages to users who are not currently online. These messages are stored by the bot and delivered to the target user the next time they log in.</p>
+<p>Commands:</p>
+<ul>
+<li>/pm <username> <message>: Stores a private message for the specified username. The message will be delivered as a private message to the target user when they next log in.</li>
+<li>/messages: This command will send you the pending messages waiting to be delivered that are sent by you.</p>
+</ul>
+<p>Note that you can't send more than one offline message per user. You still can send multiple messages for multiple users, But you can't send more than one message to a user until they login and receive your message. After that you can again send messages to that user. This is added to prevent abuse and sending lots of unnecessary messages. Please use with care.</p>
+<h3>Media player</h3>
+<p>The bot's integrated media player brings YouTube audio playback directly to your TeamTalk server. This feature lets you stream music, podcasts, or any other audio content from YouTube, creating a shared listening experience for everyone in the channel.</p>
+<p>While media player features are not that advanced, It's more than enough for most users to play streams, Control playback, Getting information about a stream, Downloading the stream, And customizability.</p>
+<h4>Features:</h4>
+<ol>
+<li>YouTube Search: You can directly search YouTube from within TeamTalk and play the first result. The bot retains the search results, allowing you to easily navigate through them.</li>
+<li>Playback Control: The bot offers commands for playing, pausing, seeking, and adjusting the volume of the playback.</li>
+<li>Playback History: TTUtilities maintains a history of recently played tracks, making it easy to revisit your favorites or see what's been played recently.</li>
+<li>Getting info about a stream, Such as duration, Link, Elapsed time.</li>
+</ol>
+<p>Before you use the media player: You must do the following:</p>
+<ul>
+<li>Configure your input and output devices. On windows: You need a virtual sound card, Such as virtual audio cable. On linux: You need to install pulseaudio. All packages are automatically installed when you run the setup script on linux so you don't need to do extra work.</li>
+<li><a href="https://blindhelpproject-my.sharepoint.com/personal/files_blindhelp_net/Documents/BHP%20Data/Windows/Multimedia/Virtual-Audio-Cable-V4.70(Downloaded-from-BlindHelp.net).rar?ga=1">Download virtual audio cable from here</a></li>
+<li>On linux: Please run the setup script before running the bot. On windows: Install virtual audio cable or any virtual sound card program before running the bot.</li>
+<li>When choosing the input device on linux: Make sure it's set to pulse. Usually this is the first choice. When choosing output devices: Set it to auto select device.</li>
+<li>On windows: If you're using virtual audio cable: You need to set both input and output devices to line1, Virtual audio cable.</li>
+<li>Run the bot after you install all requirements, And do not close the terminal. You should search for a video in order for the bot to login to your account. Use the command "/p <query>", This will not play anything at first run and instead you'll see "yt-dlp" prompting you to go to the following link to add a new device: https://www.google.com/device . You should also see a code that you need to enter in your browser to complete sign in.</li>
+<p>[youtube+oauth2] To give yt-dlp access to your account, go to https://www.google.com/device and enter code XXX-YYY-ZZZ</p>
+<p>This is what you should see in the terminal when playing a video for the first time. as said above: You need to open this link in your browser and enter the code.</p>
+<li>If successful: The bot will play the requested video. You don't need to do that again unless you wish to change your server machine.</li>
+<li>After that you can close the terminal and run the bot directly either by using a service file or other ways. Please be careful when entering your login code for "yt-dlp" to avoid problems.</li>
+</ul>
+<h4>Media player commands:</h4>
+<p>Below are the list of commands for the media player.</p>
+<ul>
+<li>/u <link>: Play an audio / video from the provided link. If you provide a youtube link: It will also play the youtube video.</li>
+<li>/p <query>: Searches for the given query and plays the first result.</li>
+<li>/p: Without a query: Pauses or resumes the playback of an audio stream or a youtube video.</li>
+<li>/n: Plays the next track in the YouTube search results.</li>
+<li>/b: Plays the previous track in the YouTube search results.</li>
+<li>+ [optional:amount]: Seeks forward in the playback. amount is in seconds; if omitted, the default seek step from the configuration is used.</li>
+<li>-, "Dash"  [optional:amount]: Seeks backward in the playback. If no value is provided: Uses the default value from the configuration.</li>
+<li>/v: Sets the volume. Starting from 0 to the maximum allowed value. If no value is provided: Sends the current volume.</li>
+<li>/gl: Sends the link of the currently playing track to the user.</li>
+<li>/s: Stops the current playback, including both audio streams and any text-to-speech that might be running.</li>
+<li>/d: Displays information about the current track's duration, including total duration, elapsed time, and remaining time.</li>
+<li>/r: Displays a list of recently played tracks, Up to 32 entries.</li>
+<li>/r number: Plays the index from the playback history, If exists.</li>
+</ul>
+<h5>Usage examples:</h5>
+<ul>
+<li>Play a Song:/u https://www.youtube.com/watch?v=dQw4w9WgXcQ</li>
+<li>Pause Playback:/p</li>
+<li>Search and Play:/p Relaxing music</li>
+<li>Seek Forward 10 Seconds:+10</li>
+<li>Replay the 3rd Track from History:/r 3</li>
+</ul>
+<p>Please note: Playback will stop automatically when a track ends. You can use /n to play the next track in the search results (if available) or start a new track manually.</p>
+<h3>Account creation</h3>
+<p>The bot provides an easy way to create user accounts on your TeamTalk server for administrators. It allows you to specify usernames, passwords, and user rights using a simplified numbering system. Here's how it works:</p>
+<p>Use the command /new <username> <password> <rights> to create an account with the given information and rights.</p>
+<p>Please note that you need to surround arguments with <: Less than sign, and >: Grader than sign when typing the username, password, And user rights.</p>
+<p>Note: [<rights>] is An optional space-separated list of numbers representing the user rights you want to assign to the new account.</p>
+<h4>User rights:</h4>
+<p>Each user right is associated with a number. Here's a list of available user rights and their corresponding numbers:</p>
+<ol>
+<li>Multi Login: Allows the user to log in multiple times with the same username.</li>
+<li>View All Users: Grants the user permission to see all users on the server, regardless of their channel.</li>
+<li>Create Temporary Channel: Allows the user to create temporary channels that are deleted when empty.</li>
+<li>Ban Users: Gives the user the ability to ban other users from the server, either by IP address or username.</li>
+<li>Download Files: Allows the user to download files from the server's file storage.</li>
+<li>Kick Users: Grants the user permission to kick other users from the server.</li>
+<li>Locked Nickname: Prevents the user from changing their nickname.</li>
+<li>Locked Status: Prevents the user from changing their status message.</li>
+<li>Modify Channels: Allows the user to modify existing channels, including their names, topics, and passwords.</li>
+<li>Move Users: Grants the user permission to move other users between channels.</li>
+<li>Operator Enable: Allows the user to become a channel operator, granting them additional permissions within that channel.</li>
+<li>Record Voice: Gives the user permission to record voice conversations on the server.</li>
+<li>TextMessage Broadcast: Allows the user to send broadcast text messages to all users on the server.</li>
+<li>TextMessage Channel: Allows the user to send channel messages.</li>
+<li>TextMessage User: Allows the user to send private text messages to other users.</li>
+<li>Transmit Desktop: Grants the user permission to share their desktop screen with other users.</li>
+<li>Transmit Desktop Input: Allows the user to transmit keyboard and mouse input while sharing their desktop.</li>
+<li>Transmit MediaFile: Allows the user to transmit both audio and video media files.</li>
+<li>Transmit MediaFile Audio: Allows the user to transmit audio media files only.</li>
+<li>Transmit MediaFile Video: Allows the user to transmit video media files only.</li>
+<li>Transmit VideoCapture: Grants the user permission to transmit video from their webcam.</li>
+<li>Transmit Voice: Allows the user to transmit their voice through the server.</li>
+<li>Update Server Properties: Gives the user permission to modify server properties.</li>
+<li>Upload Files: Allows the user to upload files to the server's file storage.</li>
+<li>View Hidden Channels: Grants the user permission to see hidden channels on the server.</li>
+</ol>
+<h5>Usage examples:</h5>
+<p>To create a new account with the username "JohnDoe", the password "password123", and the ability to send text messages to channels and users, Use the following command:</p>
+<p>/new <JohnDoe> <password123> <14 15></p>
+<h3>All commands</h2>
+<p>This is a list of all supported commands compiled together if you want to quickly remember them.</p>
+<p>Please note: When refering to <argument>: Do not put < or > when providing arguments unless otherwise noted. These marks are only used to indecade an argument passed to a command. The only exception to this rule is the "/new" command.</p>
+<h4>User related commands:</h4>
+<ul>
+<li>/weather [nickname]: Get the current weather for your location or for the specified nickname.</li>
+<li>/search <query>: Search Wikipedia and get a 10-sentence summary. Also provides a link to the Wikipedia page.</li>
+<p>Note: When using this command, Please do not use 2 or 3 words. This command supports language detection. If you search for jupiter it might return you info not written with your language. Please avoid using very short queries.</p>
+<li>/file <query>: Download the Wikipedia page for the given query as an HTML file and upload it to your current channel.</li>
+<li>/say <text> or ' <text>: Make the bot speak the given text using text-to-speech.</li>
+<li>/voice <voice_name>: Sets the voice name for subsequent text-to-speech. Use /get_voices to discover available options. Each user can set their own preferred voice.</li>
+<li>/get_voices [optional:lang_code]: Displays a list of available voices. If lang_code is provided (e.g., "en-US"), only voices for that language are listed; otherwise, all voices are displayed.</li>
+<li>/ld: Toggles automatic language detection for text-to-speech. When active, the bot analyzes the text's language and chooses a voice that best suits it.</li>
+<li>/t source_lang target_lang: Toggle auto translation for channel messages. There is a cooldown of 10 seconds when using this command to prevent spam.</li>
+<li>/pt source_lang target_lang: Enable or disable private translation feature.</li>
+<li>/private <name>: Creates a private, hidden channel with the specified user, password protected and limited to 2 users. The channel is automatically deleted when both users log out.</li>
+<li>/who: Tells you how many users are from your country based on detected locations.</li>
+<li>/whoall: Provides a summary of how many users are from each country, showing a count for each country.</li>
+<li>/notify <nickname> <telegram_chat_id>: Registers a notification request. When the user with the specified nickname logs in, you'll receive a notification message on the Telegram chat with the provided telegram_chat_id.</li>
+<li>/unotify <username> <telegram_chat_id>: Registers a notification for a specific user by their username instead of their nickname. Useful when you want to be notified even if the user changes their nickname.</li>
+<li>/users: List online users.</li>
+<li>/pm <username> <message>: Stores a private message for the specified username. The message will be delivered as a private message to the target user when they next log in.</li>
+<li>/messages: This command will send you the pending messages waiting to be delivered that are sent by you.</p>
+<li>/dl [youtube_link]: Downloads the audio from the provided YouTube link (or the current playing video if no link is given) and uploads it to the current channel.</li>
+<li>/s: Stops the current playback, including both audio streams and any text-to-speech that might be running.</li>
+<li>/u <link>: Plays an audio/video from the provided link. Supports YouTube links.</li>
+<li>/p <query>: Searches for the given query on YouTube and plays the first result.</li>
+<li>/p: Without a query, pauses or resumes the playback of an audio stream or a YouTube video.</li>
+<li>/n: Plays the next track in the YouTube search results.</li>
+<li>/b: Plays the previous track in the YouTube search results.</li>
+<li>+ [optional:amount]: Seeks forward in the playback. amount is in seconds; if omitted, the default seek step from the configuration is used.</li>
+<li>- [optional:amount]: Seeks backward in the playback. If no value is provided, uses the default value from the configuration.</li>
+<li>/v [optional:volume]: Sets the volume. Starting from 0 to the maximum allowed value. If no value is provided: Sends the current volume.</li>
+<li>/gl: Sends the link of the currently playing track to the user.</li>
+<li>/d: Displays information about the current track's duration, including total duration, elapsed time, and remaining time.</li>
+<li>/r: Displays a list of recently played tracks, up to 32 entries.</li>
+<li>/r <number>: Plays the track at the specified index from the playback history, if it exists.</li>
+<li>/myinfo: Retrieves and displays the user's account information (username, nickname, IP address, status message).</li>
+<li>/help: Provides a list of supported commands. This list may not be updates, So refer to the readme if you find something missing.</li>
+</ul>
+<h4>Admin related commands:</h4>
+<ul>
+<li>/reboot: Reboots the server (requires authorization and SSH configuration).</li>
+<li>/exec <command>: Executes a command on the server via SSH (requires authorization and SSH configuration).</li>
+<li>/db <nickname> <duration>: Bans the user with the specified nickname by their IP address for the given duration.</li>
+<li>/udb <nickname> <duration>: Bans the user with the specified nickname by their username for the given duration. If the user is a guest account or is using a custom username, they will be banned by IP instead.</li>
+<li>/dk <nickname> <duration>: Kicks the user with the specified nickname for the given duration. The user will be kicked again if they rejoin within this time.</li>
+<li>/clear [optional_target]: Clears duration bans and kicks.</li>
+<ul>
+<li>Without a target, clears all duration bans and kicks for all users.</li>
+<li>With a target (nickname or username), clears the duration ban or kick only for the specified target.</li>
+</ul>
+<li>/b <message>: Sends a broadcast message to all users on the server.</li>
+<li>/jail <nickname>: Adds the username associated with the specified nickname to the jail list and moves the user to the jail channel.</li>
+<li>/unjail <nickname>: Removes the username associated with the specified nickname from the jail list.</li>
+<li>/jails: Displays a list of usernames currently on the jail list.</li>
+<li>/cn <new_name>: Changes the bot's nickname.</li>
+<li>/cs <new_status>: Changes the bot's status message.</li>
+<li>/cg <mode>: Changes the bot's gender (m for male, f for female, n for neutral).</li>
+<li>/save: Saves the bot configuration, including any changes made to settings like nickname, status message, etc.</li>
+<li>/new <username> <password> [<rights>]: Creates a new user account with the specified username, password, and user rights.</li>
+</ul>
+<h2>Contact us</h2>
+<p>If you have any questions, suggestions, code contributing or bug reports: feel free to contact us using one of the following ways: </p>
+<ul>
+<li>Telegram: <a href="https://t.me/diamondStar35"> Main developer: Abdalrahmen</a></li>
+<li>Telegram: <a href="https://t.me/ahmadsabbah" > ahmad sabbah </a></li>
+<li>Telegram: <a href="https;//t.me/icestar31" > ziyad mohamed </a></li>
+<li>WhatsApp: <a href="https://wa.me/201125810378" > eyad ahmed </a></li>
+</ul>
+<p>Enjoy.</p>
+<audio id="myAudio" controls>
+  <source src="https://blindmasters.org/TTUtilities/instructions.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var audio = document.getElementById('myAudio');
+  var playButton = document.getElementById('playButton');
+
+  playButton.addEventListener('click', function() {
+    audio.play();
+  });
+});
+</script>
+
+</body>
+</html>

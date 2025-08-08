@@ -1,0 +1,1 @@
+xgettext -d messages -o locales/messages.pot TTUtilities.py bot/gui.py bot/player.py bot/config_handler.py bot/help.py --from-code UTF-8
