@@ -109,12 +109,12 @@ ECHO.
 
 :: Step 5: Download TeamTalk SDK
 ECHO Step 5 of 5: Configuring the TeamTalk SDK...
-IF NOT EXIST "setup_ttsdk.py" (
-    ECHO Error: The helper script 'setup_ttsdk.py' was not found. Please ensure it is in the same directory as this setup file.
+IF NOT EXIST "tt_sdk_downloader.py" (
+    ECHO Error: The helper script for downloading TeamTalk SDK was not found. Please ensure it is in the same directory as this setup file.
     PAUSE
     EXIT /B 1
 )
-"%PYTHON_EXE%" setup_ttsdk.py
+"%PYTHON_EXE%" tt_sdk_downloader.py
 ECHO The TeamTalk SDK has been configured.
 ECHO.
 

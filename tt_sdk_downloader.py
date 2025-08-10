@@ -11,20 +11,26 @@ TARGET_FOLDER_NAME = "TeamTalk_DLL"
 TEMP_DIR = "ttsdk_temp"
 DOWNLOAD_FILE = "ttsdk.7z"
 
-
 def get_url_suffix_from_platform() -> str:
-    """Determines the download suffix based on the operating system."""
-    if sys.platform != "win32":
-        sys.exit("This script is only intended for Windows.")
-
-    is_64bit_windows = platform.architecture()[0] == "64bit" or \
-                       os.environ.get("PROCESSOR_ARCHITEW6432") is not None or \
-                       os.environ.get("PROCESSOR_ARCHITECTURE") == "AMD64"
-
-    if is_64bit_windows:
-        return "win64"
+    machine = platform.machine()
+    if sys.platform == "win32":
+        architecture = platform.architecture()
+        if machine == "AMD64" or machine == "x86":
+            if architecture[0] == "64bit":
+                return "win64"
+            else:
+                return "win32"
+        else:
+            sys.exit("Native Windows on ARM is not supported")
+    elif sys.platform == "darwin":
+        sys.exit("Darwin is not supported")
     else:
-        return "win32"
+        if machine == "AMD64" or machine == "x86_64":
+            return "ubuntu22_x86_64"
+        elif "arm" in machine:
+            return "raspbian_armhf"
+        else:
+            sys.exit("Your architecture is not supported")
 
 
 def download_file_from_url(url: str, file_path: str) -> None:
@@ -33,7 +39,7 @@ def download_file_from_url(url: str, file_path: str) -> None:
     try:
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
         with requests.get(url, headers=headers, stream=True) as r:
-            r.raise_for_status()  # Raise an exception for bad status codes
+            r.raise_for_status()
             with open(file_path, "wb") as f:
                 shutil.copyfileobj(r.raw, f)
         print("Download complete.")
