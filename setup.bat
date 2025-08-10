@@ -1,4 +1,5 @@
 @ECHO OFF
+SETLOCAL EnableDelayedExpansion
 TITLE TT Utilities Bot Setup
 
 :: Change the current directory to the script's directory. This fixes issues with finding local files.
@@ -15,8 +16,11 @@ CLS
 
 :: Step 1: Check for Python
 ECHO Step 1 of 5: Checking for Python installation...
-python.exe --version >nul 2>nul
-IF %ERRORLEVEL% NEQ 0 (
+CALL :FindPython
+
+IF DEFINED PYTHON_EXE (
+    ECHO Python is already installed.
+) ELSE (
     ECHO Python was not found. The script will now download and install the recommended version ^(Python 3.11^).
     powershell -Command "Invoke-WebRequest -Uri 'https://www.python.org/ftp/python/3.11.9/python-3.11.9-amd64.exe' -OutFile 'python_installer.exe'"
     IF NOT EXIST python_installer.exe (
@@ -25,20 +29,24 @@ IF %ERRORLEVEL% NEQ 0 (
         EXIT /B 1
     )
     ECHO Installing Python. This will add Python to your system's PATH. Please wait...
-    start /wait python_installer.exe /quiet InstallAllUsers=0 PrependPath=1 Include_pip=1
+    start /wait python_installer.exe /passive InstallAllUsers=0 PrependPath=1 Include_pip=1
     DEL python_installer.exe
-    python --version >nul 2>nul
-    IF %ERRORLEVEL% NEQ 0 (
-        ECHO Error: Python installation failed or was not added to PATH correctly.
-        ECHO Please install Python 3.11 manually, ensuring the "Add Python to PATH" option is checked during installation.
+
+    ECHO Verifying installation...
+    :: FIX: Call FindPython again to locate the newly installed executable.
+    CALL :FindPython
+
+    IF NOT DEFINED PYTHON_EXE (
+        ECHO.
+        ECHO ERROR: Python was installed, but the script could not find it.
+        ECHO Please restart this setup script. If the problem persists, you may need to install Python manually.
         PAUSE
         EXIT /B 1
     )
     ECHO Python has been installed successfully.
-) ELSE (
-    ECHO Python is already installed.
 )
 ECHO.
+
 
 :: Step 2: Check for 7-Zip
 ECHO Step 2 of 5: Checking for 7-Zip installation...
@@ -88,11 +96,11 @@ IF NOT EXIST "requirements.txt" (
     EXIT /B 1
 )
 ECHO This may take a few moments. Please wait...
-pip install -r requirements.txt >nul
+"%PYTHON_EXE%" -m pip install -r requirements.txt >nul
 IF %ERRORLEVEL% NEQ 0 (
     ECHO Error: Failed to install the required Python libraries.
     ECHO Please check your internet connection or try running this command manually in a terminal:
-    ECHO pip install -r requirements.txt
+    ECHO "%PYTHON_EXE%" -m pip install -r requirements.txt
     PAUSE
     EXIT /B 1
 )
@@ -106,7 +114,7 @@ IF NOT EXIST "setup_ttsdk.py" (
     PAUSE
     EXIT /B 1
 )
-python setup_ttsdk.py
+"%PYTHON_EXE%" setup_ttsdk.py
 ECHO The TeamTalk SDK has been configured.
 ECHO.
 
@@ -117,7 +125,34 @@ ECHO.
 PAUSE
 ECHO.
 ECHO Launching the bot now...
-
-start "" "python" main.py
+start "" "%PYTHON_EXE%" main.py
 
 EXIT /B 0
+
+:FindPython
+    SET "PYTHON_EXE="
+    SET "PYTHON_BASE=%LocalAppData%\Programs\Python"
+    FOR /D %%D IN ("%PYTHON_BASE%\Python*") DO (
+        IF EXIST "%%D\python.exe" (
+            SET "PYTHON_EXE=%%D\python.exe"
+            GOTO :PythonFound
+        )
+    )
+
+    FOR /F "delims=" %%P IN ('where python 2^>nul') DO (
+        SET "CANDIDATE_PATH=%%P"
+        ECHO "!CANDIDATE_PATH!" | find /I "\Microsoft\WindowsApps\python.exe" >nul
+        IF !ERRORLEVEL! NEQ 0 (
+            SET "PYTHON_EXE=!CANDIDATE_PATH!"
+            GOTO :PythonFound
+        )
+    )
+
+:PythonFound
+    IF DEFINED PYTHON_EXE (
+        FOR %%F IN ("!PYTHON_EXE!") DO (
+            SET "PYTHON_DIR=%%~dpF"
+            SET "PATH=%%~dpF;%%~dpFScripts;!PATH!"
+        )
+    )
+GOTO :EOF
