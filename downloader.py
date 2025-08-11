@@ -9,7 +9,6 @@ from tqdm import tqdm
 
 SDK_BASE_URL = "https://bearware.dk/teamtalksdk"
 TARGET_FOLDER_NAME = "TeamTalk_DLL"
-TEMP_DIR = "ttsdk_temp"
 DOWNLOAD_FILE = "ttsdk.7z"
 
 def get_url_suffix_from_platform() -> str:
@@ -81,36 +80,39 @@ def do_download_and_extract() -> None:
         print("Could not find a suitable SDK version (5.15x) on the page.", file=sys.stderr)
         sys.exit(1)
 
-    download_url = f"{SDK_BASE_URL}/{version}/tt5sdk_{version}_{get_url_suffix_from_platform()}.7z"
-    if os.path.exists(TEMP_DIR):
-        shutil.rmtree(TEMP_DIR)
-    os.makedirs(TEMP_DIR)
-    
-    archive_path = os.path.join(TEMP_DIR, DOWNLOAD_FILE)
-    download_file_from_url(download_url, archive_path)
+    platform_suffix = get_url_suffix_from_platform()
+    download_url = f"{SDK_BASE_URL}/{version}/tt5sdk_{version}_{platform_suffix}.7z"    
+    download_file_from_url(download_url, DOWNLOAD_FILE)
 
     print(f"Extracting {DOWNLOAD_FILE}...")
     try:
-        patoolib.extract_archive(archive_path, outdir=TEMP_DIR, verbosity=-1)
+        patoolib.extract_archive(DOWNLOAD_FILE, outdir=".", verbosity=-1)
         print("Extraction complete.")
     except Exception as e:
         print(f"Failed to extract archive: {e}", file=sys.stderr)
         print("Please ensure 7-Zip is installed and accessible in your system's PATH.", file=sys.stderr)
-        shutil.rmtree(TEMP_DIR)
+        if os.path.exists(DOWNLOAD_FILE):
+            os.remove(DOWNLOAD_FILE) # Clean up failed download
         sys.exit(1)
 
-    print(f"Moving '{TARGET_FOLDER_NAME}' folder...")
-    extracted_subfolder = os.path.join(TEMP_DIR, os.listdir(TEMP_DIR)[1]) # [0] is the .7z file
-    source_path = os.path.join(extracted_subfolder, "Library", TARGET_FOLDER_NAME)
+    extracted_parent_folder = f"tt5sdk_{version}_{platform_suffix}"
+    source_path = os.path.join(extracted_parent_folder, "Library", TARGET_FOLDER_NAME)
 
+    print(f"Moving required folders...")
+    if not os.path.isdir(source_path):
+        print(f"Error: Expected folder '{source_path}' not found in archive.", file=sys.stderr)
+        os.remove(DOWNLOAD_FILE)
+        shutil.rmtree(extracted_parent_folder)
+        sys.exit(1)
+        
     if os.path.exists(TARGET_FOLDER_NAME):
         shutil.rmtree(TARGET_FOLDER_NAME)
-
     shutil.move(source_path, ".")
     print("Move complete.")
 
-    print("Cleaning up temporary files...")
-    shutil.rmtree(TEMP_DIR)
+    print("Cleaning up...")
+    os.remove(DOWNLOAD_FILE)
+    shutil.rmtree(extracted_parent_folder)
     print("Cleanup complete.")
 
 def run_sdk_setup():
