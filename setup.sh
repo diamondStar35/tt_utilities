@@ -46,7 +46,7 @@ main() {
     . /etc/os-release
     if [[ "$ID" == "debian" || "$ID" == "ubuntu" ]]; then
         PACKAGES="pulseaudio libmpv-dev mpv ffmpeg python3 python3-dev python3-pip git p7zip-full"
-        echo "Updating package list (may require password)..."
+        echo "Updating package list..."
         sudo apt-get update -qq
         echo "Installing: ${PACKAGES}..."
         sudo apt-get install -y -qq ${PACKAGES}
@@ -95,22 +95,21 @@ main() {
         echo "Configuring services for the current user ($USER)..."
         # Enable lingering to allow user services to run after logout
         if ! sudo loginctl show-user "$USER" | grep -q "Linger=yes"; then
-            echo "Enabling user lingering (requires password)..."
+            echo "Enabling user lingering..."
             sudo loginctl enable-linger "$USER"
         fi
         mkdir -p "${SERVICE_DIR}"
         cp systemd/user/*.service "${SERVICE_DIR}/"
-        cp pulseaudio.socket "${SERVICE_DIR}/"
+        cp systemd/user/pulseaudio.socket "${SERVICE_DIR}/"
     else
         SERVICE_DIR="/etc/systemd/system"
         SYSTEMCTL_CMD="sudo systemctl"
-        echo "Configuring system-wide services (requires password)..."
-        sudo cp systemd/user/*.service "${SERVICE_DIR}/"
-        sudo cp pulseaudio.socket "${SERVICE_DIR}/"
+        echo "Configuring system-wide services..."
+        sudo cp systemd/user/*.* "${SERVICE_DIR}/"
     fi
     
     echo "Installing TeamTalk library..."
-    sudo cp TeamTalk_DLL/libTeamTalk5.so /usr/local/lib/
+    sudo cp TeamTalk_DLL/libTeamTalk5.so /usr/lib/
     sudo ldconfig
 
     echo "Reloading systemd and enabling services..."
@@ -126,10 +125,5 @@ main() {
     echo -e "  ${C_YELLOW}python3 ${MAIN_SCRIPT}${C_RESET}"
     echo
 }
-
-if [ "$EUID" -eq 0 ]; then
-  echo -e "${C_RED}Please do not run this script as root. It will ask for sudo password when needed.${C_RESET}"
-  exit 1
-fi
 
 main "$@"
