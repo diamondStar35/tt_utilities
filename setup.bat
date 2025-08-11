@@ -22,24 +22,24 @@ IF DEFINED PYTHON_EXE (
     ECHO Python is already installed.
 ) ELSE (
     ECHO Python was not found. The script will now download and install the recommended version ^(Python 3.11^).
-    powershell -Command "Invoke-WebRequest -Uri 'https://www.python.org/ftp/python/3.11.9/python-3.11.9-amd64.exe' -OutFile 'python_installer.exe'"
+    ECHO Downloading Python installer...
+    curl -L -o python_installer.exe "https://www.python.org/ftp/python/3.11.9/python-3.11.9-amd64.exe" > NUL 2>&1
+    IF %ERRORLEVEL% NEQ 0 (
+        ECHO curl failed or is not available, falling back to PowerShell...
+        powershell -Command "Invoke-WebRequest -Uri 'https://www.python.org/ftp/python/3.11.9/python-3.11.9-amd64.exe' -OutFile 'python_installer.exe'"
+    )
     IF NOT EXIST python_installer.exe (
-        ECHO Error: The Python installer could not be downloaded. Please check your internet connection and try again.
+        ECHO Error: The Python installer could not be downloaded.
         PAUSE
         EXIT /B 1
     )
-    ECHO Installing Python. This will add Python to your system's PATH. Please wait...
+    ECHO Installing Python...
     start /wait python_installer.exe /passive InstallAllUsers=0 PrependPath=1 Include_pip=1
     DEL python_installer.exe
-
     ECHO Verifying installation...
-    :: FIX: Call FindPython again to locate the newly installed executable.
     CALL :FindPython
-
     IF NOT DEFINED PYTHON_EXE (
-        ECHO.
-        ECHO ERROR: Python was installed, but the script could not find it.
-        ECHO Please restart this setup script. If the problem persists, you may need to install Python manually.
+        ECHO ERROR: Python was installed, but the script could not find it. Please restart this setup script.
         PAUSE
         EXIT /B 1
     )
@@ -72,24 +72,8 @@ IF %ERRORLEVEL% EQU 0 (
 )
 ECHO.
 
-:: Step 3: Download mpv.dll
-ECHO Step 3 of 5: Checking for audio components ^(mpv.dll^)...
-IF EXIST "mpv.dll" (
-    ECHO The audio component ^(mpv.dll^) already exists. Skipping download.
-) ELSE (
-    ECHO Downloading required audio component ^(mpv.dll^)...
-    powershell -Command "Invoke-WebRequest -Uri 'https://blindmasters.org/TTUtilities/mpv.dll' -OutFile 'mpv.dll'"
-    IF NOT EXIST "mpv.dll" (
-        ECHO Error: Failed to download mpv.dll. The bot's audio playback may not work.
-        PAUSE
-    ) ELSE (
-        ECHO The audio component was downloaded successfully.
-    )
-)
-ECHO.
-
-:: Step 4: Install Python Requirements
-ECHO Step 4 of 5: Installing Python libraries...
+:: Step 3: Install Python Requirements
+ECHO Step 3 of 5: Installing Python libraries...
 IF NOT EXIST "requirements.txt" (
     ECHO Error: The 'requirements.txt' file was not found in the bot's directory.
     PAUSE
@@ -107,14 +91,30 @@ IF %ERRORLEVEL% NEQ 0 (
 ECHO All required Python libraries have been installed successfully.
 ECHO.
 
+:: Step 3: Download mpv.dll
+ECHO Step 4 of 5: Checking for audio components ^(mpv.dll^)...
+IF EXIST "mpv.dll" (
+    ECHO The audio component ^(mpv.dll^) already exists. Skipping download.
+) ELSE (
+    ECHO Downloading required audio component...
+    "%PYTHON_EXE%" downloader.py --download "https://blindmasters.org/TTUtilities/mpv.dll" "mpv.dll"
+    IF NOT EXIST "mpv.dll" (
+        ECHO Error: Failed to download mpv.dll. The bot's audio playback may not work.
+        PAUSE
+    ) ELSE (
+        ECHO The audio component was downloaded successfully.
+    )
+)
+ECHO.
+
 :: Step 5: Download TeamTalk SDK
 ECHO Step 5 of 5: Configuring the TeamTalk SDK...
-IF NOT EXIST "tt_sdk_downloader.py" (
+IF NOT EXIST "downloader.py" (
     ECHO Error: The helper script for downloading TeamTalk SDK was not found. Please ensure it is in the same directory as this setup file.
     PAUSE
     EXIT /B 1
 )
-"%PYTHON_EXE%" tt_sdk_downloader.py
+"%PYTHON_EXE%" downloader.py
 ECHO The TeamTalk SDK has been configured.
 ECHO.
 

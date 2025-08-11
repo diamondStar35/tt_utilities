@@ -5,6 +5,7 @@ import os
 import platform
 import shutil
 import sys
+from tqdm import tqdm
 
 SDK_BASE_URL = "https://bearware.dk/teamtalksdk"
 TARGET_FOLDER_NAME = "TeamTalk_DLL"
@@ -32,21 +33,33 @@ def get_url_suffix_from_platform() -> str:
         else:
             sys.exit("Your architecture is not supported")
 
-
 def download_file_from_url(url: str, file_path: str) -> None:
-    """Downloads a file from a URL."""
-    print(f"Downloading from {url}")
+    """Downloads a file from a URL with a TQDM progress bar."""
+    print(f"Downloading from: {url}")
     try:
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
         with requests.get(url, headers=headers, stream=True) as r:
             r.raise_for_status()
-            with open(file_path, "wb") as f:
-                shutil.copyfileobj(r.raw, f)
+            total_size = int(r.headers.get('content-length', 0))
+            block_size = 4096
+            
+            with tqdm(total=total_size, unit='iB', unit_scale=True, desc=os.path.basename(file_path)) as progress_bar:
+                with open(file_path, "wb") as f:
+                    for data in r.iter_content(block_size):
+                        progress_bar.update(len(data))
+                        f.write(data)
+
+            if total_size != 0 and progress_bar.n != total_size:
+                print("Error, download might be incomplete.", file=sys.stderr)
+                sys.exit(1)
+
         print("Download complete.")
     except requests.exceptions.RequestException as e:
-        print(f"An error occurred while downloading the file: {e}", file=sys.stderr)
+        print(f"\nAn error occurred while downloading the file: {e}", file=sys.stderr)
         sys.exit(1)
-
+    except Exception as e:
+        print(f"\nAn unexpected error occurred: {e}", file=sys.stderr)
+        sys.exit(1)
 
 def do_download_and_extract() -> None:
     """Handles the entire process of downloading and extracting the SDK."""
@@ -69,26 +82,25 @@ def do_download_and_extract() -> None:
         sys.exit(1)
 
     download_url = f"{SDK_BASE_URL}/{version}/tt5sdk_{version}_{get_url_suffix_from_platform()}.7z"
-
-    download_file_from_url(download_url, DOWNLOAD_FILE)
-
-    print(f"Extracting {DOWNLOAD_FILE}...")
     if os.path.exists(TEMP_DIR):
         shutil.rmtree(TEMP_DIR)
     os.makedirs(TEMP_DIR)
+    
+    archive_path = os.path.join(TEMP_DIR, DOWNLOAD_FILE)
+    download_file_from_url(download_url, archive_path)
 
+    print(f"Extracting {DOWNLOAD_FILE}...")
     try:
-        patoolib.extract_archive(DOWNLOAD_FILE, outdir=TEMP_DIR, verbosity=-1)
+        patoolib.extract_archive(archive_path, outdir=TEMP_DIR, verbosity=-1)
         print("Extraction complete.")
     except Exception as e:
         print(f"Failed to extract archive: {e}", file=sys.stderr)
         print("Please ensure 7-Zip is installed and accessible in your system's PATH.", file=sys.stderr)
         shutil.rmtree(TEMP_DIR)
-        os.remove(DOWNLOAD_FILE)
         sys.exit(1)
 
     print(f"Moving '{TARGET_FOLDER_NAME}' folder...")
-    extracted_subfolder = os.path.join(TEMP_DIR, os.listdir(TEMP_DIR)[0])
+    extracted_subfolder = os.path.join(TEMP_DIR, os.listdir(TEMP_DIR)[1]) # [0] is the .7z file
     source_path = os.path.join(extracted_subfolder, "Library", TARGET_FOLDER_NAME)
 
     if os.path.exists(TARGET_FOLDER_NAME):
@@ -98,19 +110,15 @@ def do_download_and_extract() -> None:
     print("Move complete.")
 
     print("Cleaning up temporary files...")
-    os.remove(DOWNLOAD_FILE)
     shutil.rmtree(TEMP_DIR)
     print("Cleanup complete.")
 
-
-def main():
-    """Main script execution."""
+def run_sdk_setup():
+    """Main script execution for SDK setup."""
     print("--- TeamTalk SDK Setup ---")
-
     if os.path.exists(TARGET_FOLDER_NAME):
         while True:
-            response = input(f"The folder '{TARGET_FOLDER_NAME}' already exists. "
-                             f"Would you like to replace it? [y/n]: ").lower().strip()
+            response = input(f"The folder '{TARGET_FOLDER_NAME}' already exists. Would you like to replace it? [y/n]: ").lower().strip()
             if response in ['y', 'yes']:
                 print(f"Proceeding with re-download. The existing folder will be replaced.")
                 do_download_and_extract()
@@ -122,18 +130,17 @@ def main():
                 print("Invalid input. Please enter 'y' or 'n'.")
     else:
         do_download_and_extract()
-
     print("--- TeamTalk SDK Setup Finished ---")
 
+def main():
+    """Main entry point. Dispatches to the correct function based on arguments."""
+    if len(sys.argv) == 4 and sys.argv[1] == '--download':
+        url = sys.argv[2]
+        output_path = sys.argv[3]
+        download_file_from_url(url, output_path)
+    # Otherwise, run the default SDK setup
+    else:
+        run_sdk_setup()
 
 if __name__ == "__main__":
-    try:
-        import requests
-        import bs4
-        import patoolib
-    except ImportError as e:
-        print(f"Missing required Python package: {e.name}", file=sys.stderr)
-        print("Please install it by running: pip install -r requirements.txt", file=sys.stderr)
-        sys.exit(1)
-
     main()

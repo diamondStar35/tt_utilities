@@ -1,7 +1,7 @@
 #!/bin/bash
 MAIN_SCRIPT="main.py"
 REQUIREMENTS_FILE="requirements-linux.txt"
-SDK_DOWNLOADER_SCRIPT="tt_sdk_downloader.py"
+SDK_DOWNLOADER_SCRIPT="downloader.py"
 
 set -e
 cd "$(dirname "$0")"
