@@ -45,10 +45,7 @@ class BotUtils:
         """
         _ = gettext_func
         update_url = "https://blindmasters.org/TTUtilities/version.txt"
-        if sys.platform == 'win32':
-            download_url = "https://blindmasters.org/TTUtilities/TTUtilities.zip"
-        else:
-            download_url = "https://blindmasters.org/TTUtilities/TTUtilities-linux.zip"
+        download_url = "https://blindmasters.org/TTUtilities/tt_utilities.zip"
 
         try:
             print(_("Checking for updates..."))
@@ -61,7 +58,7 @@ class BotUtils:
                 download_response = requests.get(download_url, stream=True)
                 download_response.raise_for_status()
                 total_size = int(download_response.headers.get('content-length', 0))
-                zip_filename = "TTUtilities_update.zip"
+                zip_filename = "tt_utilities_update.zip"
                 with open(zip_filename, "wb") as f, tqdm(
                     desc=zip_filename, total=total_size, unit='iB', unit_scale=True, unit_divisor=1024,
                 ) as bar:
