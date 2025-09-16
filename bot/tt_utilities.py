@@ -38,8 +38,8 @@ class TTUtilities(TeamTalk):
         self.ssh_config = self.config_handler.get_ssh_config()
         self.teamtalk_license_config = self.config_handler.get_teamtalk_license_config()
         self.cookiefile = cookiefile
-        self.io_pool = LoggingThreadPoolExecutor(max_workers=10, thread_name_prefix='TTBot_IO')
-        self.quick_task_pool = LoggingThreadPoolExecutor(max_workers=5, thread_name_prefix='TTBot_Quick')
+        self.io_pool = None
+        self.quick_task_pool = None
         self.player = Player(self.config_handler, cookiefile=self.cookiefile)
         self.command_handler = CommandHandler(self, prefix='/')
         self.initialize_connection()
@@ -51,6 +51,8 @@ class TTUtilities(TeamTalk):
         This method is safe to call multiple times (after a shutdown).
         """
         super().__init__()
+        self.io_pool = LoggingThreadPoolExecutor(max_workers=10, thread_name_prefix='TTBot_IO')
+        self.quick_task_pool = LoggingThreadPoolExecutor(max_workers=5, thread_name_prefix='TTBot_Quick')
         
         self.just_joined = True
         self.last_command_sender_id = None
@@ -215,8 +217,10 @@ class TTUtilities(TeamTalk):
             print(self._("User {nickname} is excluded, skipping checks.").format(nickname=ttstr(user.szNickname)))
             return
 
-        self.admin_cog.handle_user_login_checks(user)
-        self.user_manager.on_user_logged_in(user)
+        user_was_actioned = self.admin_cog.handle_user_login_checks(user)        
+        # Only proceed with the welcome message if no action was taken.
+        if not user_was_actioned:
+            self.user_manager.on_user_logged_in(user)
 
     def onCmdUserJoinedChannel(self, user: User):
         self.jail_cog.handle_user_join_channel(user)

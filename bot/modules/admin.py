@@ -56,7 +56,7 @@ class AdminCog:
                 user_data = (nickname, ip_address, username)
                 self.duration_kicks[user_data] = (duration, end_time)
             del self.pending_kicks[nickname.lower()]
-            return # User was kicked, stop processing
+            return True # User was kicked, stop processing
 
         if username.lower() in self.pending_kicks:
             _, duration, end_time = self.pending_kicks[username.lower()]
@@ -65,14 +65,14 @@ class AdminCog:
                 user_data = (nickname, ip_address, username)
                 self.duration_kicks[user_data] = (duration, end_time)
             del self.pending_kicks[username.lower()]
-            return # User was kicked, stop processing
+            return True # User was kicked, stop processing
 
         # 3. Check for active duration kicks
         for user_data, (duration, end_time) in list(self.duration_kicks.items()):
             if time.time() < end_time:
                 if user_data[0] == nickname or user_data[1] == ip_address or (user_data[2] and user_data[2] == username):
                     self.bot.kick_user(user_id)
-                    return # User was kicked, stop processing
+                    return True # User was kicked, stop processing
             else:
                 del self.duration_kicks[user_data] # Clean up expired kick
 
@@ -81,7 +81,7 @@ class AdminCog:
             _, end_time = self.duration_bans[ip_address]
             if time.time() < end_time:
                 self.bot.kick_user(user_id)
-                return
+                return True
             else:
                 del self.duration_bans[ip_address]
     
@@ -89,7 +89,7 @@ class AdminCog:
             _, end_time = self.duration_bans[username]
             if time.time() < end_time:
                 self.bot.kick_user(user_id)
-                return
+                return True
             else:
                 del self.duration_bans[username]
             
@@ -101,14 +101,14 @@ class AdminCog:
             elif self.bot.bot_config["blacklist_mode"] == 2:
                 self.bot.ban_user(user_id, BanType.BANTYPE_IPADDR)
                 self.bot.kick_user(user_id)
-            return
+            return True
 
         # 6. Check for "NoName"
         if self.bot.bot_config['prevent_noname']:
             if not nickname or re.match(r"^NoName\s*(?:-\s*#\d+)?$", nickname):
                 self.bot.privateMessage(user_id, self.bot.bot_config['noname_note'])
                 self.bot.kick_user(user_id)
-                return
+                return True
 
         # 7. Check for character limit
         char_limit = self.bot.bot_config["char_limit"]
@@ -119,10 +119,14 @@ class AdminCog:
             elif self.bot.bot_config["char_limit_mode"] == 2:
                 self.bot.ban_user(user_id, BanType.BANTYPE_IPADDR)
                 self.bot.kick_user(user_id)
-            return
+            return True
+        return False
 
     def check_message_for_blacklist(self, textmessage: TextMessage):
         """Checks a text message for blacklisted words and takes action."""
+        if textmessage.nFromUserID == self.bot.getMyUserID():
+            return False
+
         message_text = ttstr(textmessage.szMessage)
         blacklist = utils.load_blacklist("blacklist.txt")
         pattern = r"\b(" + "|".join(re.escape(word) for word in blacklist) + r")\b"

@@ -1,6 +1,9 @@
 import time
+import langdetect
+from langdetect.lang_detect_exception import LangDetectException
 from concurrent.futures import ThreadPoolExecutor
 from deep_translator import GoogleTranslator
+from deep_translator.exceptions import LanguageNotSupportedException
 from TeamTalk5 import TextMessage, TextMsgType, ttstr
 
 class TranslatorCog:
@@ -63,10 +66,19 @@ class TranslatorCog:
             return
 
         try:
+            detected_lang = langdetect.detect(message_text)
+            if detected_lang == self.target_lang:
+                return
+        except LangDetectException:
+            pass
+
+        try:
             translated = GoogleTranslator(source=self.source_lang, target=self.target_lang).translate(message_text)
             if translated:
                 self.bot.send_message(f"{translated}")
                 self.last_translated_message = message_text
+        except LanguageNotSupportedException:
+            self.bot.send_message(self._("The language you have requested is not supported or Invalid Language Code. Disabling translation."))
         except Exception as e:
             self.bot.send_message(self._("Error during translation: {e}. Disabling auto-translate.").format(e=e))
             self.auto_translate = False
@@ -90,6 +102,10 @@ class TranslatorCog:
             ).translate(ttstr(textmessage.szMessage))
             if translated:
                 self.bot.send_message(self._("{nickname} says: {translated}").format(nickname=ttstr(user.szNickname), translated=translated))
+        except LanguageNotSupportedException:
+            self.bot.privateMessage(user_id, self._("The language you have requested is not supported or Invalid Language Code. Disabling translation."))
+            if user_id in self.user_translation_modes:
+                del self.user_translation_modes[user_id]
         except Exception as e:
             self.bot.privateMessage(user_id, self._("Error: {e}. Disabling private translate mode.").format(e=e))
             if user_id in self.user_translation_modes:

@@ -1,4 +1,4 @@
-from TeamTalk5 import ttstr
+from TeamTalk5 import ttstr, UserType
 import wikipedia
 import langdetect
 import requests
@@ -113,7 +113,7 @@ class GeneralCog:
         if sender_user:
             sender_username = ttstr(sender_user.szUsername).lower()
             authorized_users = [u.strip().lower() for u in self.bot.accounts_config.get("authorized_users", [])]
-            if sender_username in authorized_users or (self.bot.accounts_config.get('detect_server_admins') and sender_user.uUserType == self.bot.UserType.USERTYPE_ADMIN):
+            if sender_username in authorized_users or (self.bot.accounts_config.get('detect_server_admins') and sender_user.uUserType == UserType.USERTYPE_ADMIN):
                 is_admin = True
         
         self.bot.privateMessage(user_id, self._("--- Available Commands ---"))
