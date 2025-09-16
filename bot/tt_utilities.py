@@ -263,7 +263,8 @@ class TTUtilities(TeamTalk):
         if message_text.startswith(self.command_handler.prefix):
             self.command_handler.handle_message(textmessage)
             return
-            
+
+        self.translator_cog.handle_whisper_translation(textmessage)            
         if self.translator_cog.handle_channel_translation(textmessage):
             return
         if self.translator_cog.handle_private_translation(textmessage):
