@@ -334,6 +334,41 @@ class TTUtilities(TeamTalk):
         self.doKickUser(user_id, user_channel_id)
         self.doKickUser(user_id, 0)
 
+    def ban_user(self, user_id, ban_type=BanType.BANTYPE_USERNAME):
+        banned_user = BannedUser()
+        while True:
+            user = self.getUser(user_id)
+            if user is not None:
+                break
+            else:
+                continue
+        if ban_type == BanType.BANTYPE_IPADDR:
+            while True:
+                ip_address=user.szIPAddress
+                if ip_address is None or ip_address == "":
+                    continue
+                else:
+                    banned_user.szIPAddress =ip_address
+                    break
+            self.banned_users[user.szIPAddress] = banned_user
+            banned_user.uBanTypes =BanType.BANTYPE_IPADDR
+        else:
+            if user.szUsername=='guest' or user.szUsername==self.accounts_config['custom_username']:
+                while True:
+                    ip_address=user.szIPAddress
+                    if ip_address is None or ip_address == "":
+                        continue
+                    else:
+                        banned_user.szIPAddress =ip_address
+                        break
+                self.banned_users[user.szIPAddress] = banned_user
+                banned_user.uBanTypes =BanType.BANTYPE_IPADDR
+            else:
+                banned_user.szUsername = user.szUsername
+                self.banned_users[user.szUsername] = banned_user
+                banned_user.uBanTypes =BanType.BANTYPE_USERNAME
+        self.doBan(banned_user)
+
     def send_broadcast_messages_at_intervals(self, messages):
         random.seed()
         while True:
