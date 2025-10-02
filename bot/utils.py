@@ -14,7 +14,7 @@ class BotUtils:
     """
     A class for standalone utility functions used by the bot.
     """
-    VERSION = "2.3.2"
+    VERSION = "2.3.3"
 
     @staticmethod
     def load_messages(filename="messages.txt"):
@@ -44,8 +44,8 @@ class BotUtils:
             gettext_func (function): The gettext function (e.g., `bot._`) for translations.
         """
         _ = gettext_func
-        update_url = "https://blindmasters.org/TTUtilities/version.txt"
-        download_url = "https://blindmasters.org/TTUtilities/tt_utilities.zip"
+        update_url = "https://blindmasters.org/tt_utilities/version.txt"
+        download_url = "https://blindmasters.org/tt_utilities/tt_utilities.zip"
 
         try:
             print(_("Checking for updates..."))

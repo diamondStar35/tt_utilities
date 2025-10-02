@@ -1,6 +1,7 @@
 import argparse
 import logging
 import sys
+import os
 import threading
 import TeamTalk5 as teamtalk
 import mpv
@@ -53,18 +54,25 @@ def main():
     parser = argparse.ArgumentParser(description="TeamTalk Utilities Bot")
     parser.add_argument("-c", "--cookiefile", help="Path to a cookies file for yt-dlp.")
     parser.add_argument("-d", "--devices", action="store_true", help="List available audio devices.")
+    parser.add_argument("-f", "--configfile", help="Path to a custom configuration file.")
     args = parser.parse_args()
 
     # If --devices flag is used, list devices and exit immediately.
     if args.devices:
         list_audio_devices()
 
+    # If a config file path is provided, check if it actually exists.
+    if args.configfile and not os.path.isfile(args.configfile):
+        print(f"Error: The specified configuration file was not found at: {args.configfile}")
+        sys.exit(1)
+
     logging.basicConfig(filename='errors.log', level=logging.ERROR, 
                         format='%(asctime)s - %(levelname)s - %(message)s')
 
     print("Initializing bot components...")
     try:
-        config = ConfigHandler()
+        config_path = args.configfile if args.configfile else "config.ini"
+        config = ConfigHandler(config_path)
         accounts = Account()
 
         bot = TTUtilities(

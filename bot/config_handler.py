@@ -19,8 +19,111 @@ class ConfigHandler:
         self.config = configparser.ConfigParser()
         self.language = "en"
         self._ = gettext.gettext  # Initialize _ for default language
+        self.CONFIG_STRUCTURE = self._get_config_structure()        
         self.read_config_file()
 
+    def _get_config_structure(self):
+        """
+        Defines the entire structure of the config.ini file.
+        This centralized structure makes validation and extension easy.
+        The `_` calls are placeholders and will be replaced by the selected language.
+        """
+        return [
+            # Each dict represents a single configuration key.
+            # 'section' and 'key' are mandatory.
+            # 'prompt' and 'help_text' are for user interaction.
+            # 'type' determines the kind of input (text, int, bool, choice, device, password).
+            # 'default' provides a fallback value.
+            # 'required' ensures a value must be present.
+
+            {'type': 'header', 'text': self._("Language Selection")},
+            {'section': 'bot', 'key': 'language', 'type': 'language', 'prompt': self._("Setup Language"), 'help_text': self._("Choose the language for the bot and setup process."), 'default': 'en'},
+
+            {'type': 'header', 'text': self._("TeamTalk Server Connection")},
+            {'section': 'server', 'key': 'address', 'type': 'text', 'prompt': self._("Server Address"), 'help_text': self._("The IP address or hostname of the TeamTalk server (e.g., myserver.com)."), 'required': True},
+            {'section': 'server', 'key': 'port', 'type': 'int', 'prompt': self._("Server Port"), 'help_text': self._("The TCP/UDP port of the server."), 'default': 10333},
+            {'section': 'server', 'key': 'encrypted', 'type': 'bool', 'prompt': self._("Is the server encrypted?"), 'help_text': self._("Set to 'yes' if the server requires an encrypted connection."), 'default': False},
+            {'section': 'server', 'key': 'username', 'type': 'text', 'prompt': self._("Bot's Username"), 'help_text': self._("The username for the bot's account on the server."), 'required': True},
+            {'section': 'server', 'key': 'password', 'type': 'password', 'prompt': self._("Bot's Password"), 'help_text': self._("The password for the bot's account.")},
+
+            {'type': 'header', 'text': self._("Bot Identity and Behavior")},
+            {'section': 'bot', 'key': 'nickname', 'type': 'text', 'prompt': self._("Bot's Nickname"), 'help_text': self._("The name the bot will display in the channel."), 'required': True},
+            {'section': 'bot', 'key': 'client_name', 'type': 'text', 'prompt': self._("Bot's Client Name"), 'help_text': self._("The client name shown in the user info (e.g., 'TTUtilities Bot v2.3')."), 'default': "TTUtilities Bot"},
+            {'section': 'bot', 'key': 'gender', 'type': 'choice', 'prompt': self._("Bot's Gender"), 'help_text': self._("This affects the bot's default icon."), 'options': {'Male': '0', 'Female': '256', 'Neutral': '4096'}, 'default': 'Male'},
+            {'section': 'bot', 'key': 'default_channel', 'type': 'text', 'prompt': self._("Default Channel"), 'help_text': self._("The full path of the channel the bot should join after login (e.g., '/chatting'). The default is the root channel (/)."), 'default': "/"},
+            {'section': 'bot', 'key': 'channel_password', 'type': 'text', 'prompt': self._("Channel Password"), 'help_text': self._("The password for the default channel, if required.")},
+            {'section': 'bot', 'key': 'status_message', 'type': 'text', 'prompt': self._("Status Message"), 'help_text': self._("An optional status message for the bot.")},
+            {'section': 'bot', 'key': 'random_message_interval', 'type': 'int', 'prompt': self._("Random Message Interval (minutes)"), 'help_text': self._("Interval in minutes for sending random broadcast messages from messages.txt. Set to 0 to disable."), 'default': 0},
+
+            {'type': 'header', 'text': self._("Audio and Playback Settings")},
+            {'section': 'playback', 'key': 'input_device', 'type': 'device', 'device_type': 'input', 'prompt': self._("Input Device"), 'help_text': self._("The audio device for voice transmission.")},
+            {'section': 'playback', 'key': 'output_device', 'type': 'device', 'device_type': 'output', 'prompt': self._("Output Device"), 'help_text': self._("The audio device for media playback.")},
+            {'section': 'playback', 'key': 'seek_step', 'type': 'int', 'prompt': self._("Seek Step (seconds)"), 'help_text': self._("Default number of seconds to seek forward/backward in media playback."), 'default': 5},
+            {'section': 'playback', 'key': 'default_volume', 'type': 'int', 'prompt': self._("Default Playback Volume"), 'help_text': self._("The initial volume for media playback (0-100)."), 'default': 80},
+            {'section': 'playback', 'key': 'max_volume', 'type': 'int', 'prompt': self._("Maximum Playback Volume"), 'help_text': self._("The highest volume users can set (e.g., 100)."), 'default': 100},
+            {'section': 'playback', 'key': 'cookiefile_path', 'type': 'text', 'prompt': self._("Cookies File Path"), 'help_text': self._("Optional path to a cookies file (e.g., cookies.txt) for yt-dlp to access private or restricted videos.")},
+
+            {'type': 'header', 'text': self._("Moderation and Security")},
+            {'section': 'bot', 'key': 'vpn_detection', 'type': 'bool', 'prompt': self._("Enable VPN/Proxy Detection?"), 'help_text': self._("Check if users are connecting via a known VPN or proxy service."), 'default': True},
+            {'section': 'bot', 'key': 'prevent_noname', 'type': 'bool', 'prompt': self._("Kick 'NoName' users?"), 'help_text': self._("Automatically kick users who log in with the default 'NoName' nickname."), 'default': True},
+            {'section': 'bot', 'key': 'noname_note', 'type': 'text', 'prompt': self._("Message for 'NoName' users"), 'help_text': self._("The private message sent to a user before they are kicked for having no name."), 'default': "Hello. Please set your nickname first by pressing F4 (On windows) or Options, > settings, > General, > Nickname  (On Android), then reconnect. Thank you."},
+            {'section': 'bot', 'key': 'intercept_channel_messages', 'type': 'bool', 'prompt': self._("Intercept All Channel Messages?"), 'help_text': self._("Allows the bot to 'see' messages in all channels for features like word blacklisting and general bot commands, such as weather and other commands, even if it's not in that channel. Highly recommended."), 'default': True},
+            {'section': 'bot', 'key': 'char_limit', 'type': 'int', 'prompt': self._("Nickname Character Limit"), 'help_text': self._("Maximum allowed characters in a user's nickname. Set to 0 to disable."), 'default': 0},
+            {'section': 'bot', 'key': 'char_limit_mode', 'type': 'choice', 'prompt': self._("Action for Long Nicknames"), 'help_text': self._("What to do when a user's nickname exceeds the character limit."), 'options': {'Kick the user': '1', 'Ban the user': '2'}, 'default': 'Kick the user'},
+            {'section': 'bot', 'key': 'blacklist_mode', 'type': 'choice', 'prompt': self._("Action for Blacklisted Words"), 'help_text': self._("What to do when a user uses a word from blacklist.txt in their name or messages."), 'options': {'Kick the user': '1', 'Ban the user': '2'}, 'default': 'Kick the user'},
+            {'section': 'bot', 'key': 'banned_countries', 'type': 'text', 'prompt': self._("Banned Countries"), 'help_text': self._("A comma-separated list of country names to ban from the server (e.g., North Korea,Israel).")},
+            {'section': 'bot', 'key': 'video_deletion_timer', 'type': 'int', 'prompt': self._("Uploaded Video Deletion Timer (minutes)"), 'help_text': self._("Time in minutes before a downloaded/uploaded video is automatically deleted from the server channel. Set to 0 to disable."), 'default': 15},
+
+            {'type': 'header', 'text': self._("Jail System")},
+            {'section': 'bot', 'key': 'jail_users', 'type': 'text', 'prompt': self._("Jailed Usernames"), 'help_text': self._("A comma-separated list of usernames to automatically confine to the jail channel upon login.")},
+            {'section': 'bot', 'key': 'jail_names', 'type': 'text', 'prompt': self._("Jailed Nicknames"), 'help_text': self._("A comma-separated list of nicknames to confine to the jail channel.")},
+            {'section': 'bot', 'key': 'jail_channel', 'type': 'text', 'prompt': self._("Jail Channel Path"), 'help_text': self._("The full path to the channel where jailed users will be moved."), 'default': "/jail"},
+            {'section': 'bot', 'key': 'jail_timer_seconds', 'type': 'int', 'prompt': self._("Jail Flood Timer (seconds)"), 'help_text': self._("The time window in seconds to monitor a jailed user for spamming join attempts."), 'default': 10},
+            {'section': 'bot', 'key': 'jail_flood_count', 'type': 'int', 'prompt': self._("Jail Flood Count"), 'help_text': self._("Number of join attempts within the timer window that will trigger a ban."), 'default': 5},
+
+            {'type': 'header', 'text': self._("Exclusions (Immunity)")},
+            {'section': 'exclusion', 'key': 'ips', 'type': 'text', 'prompt': self._("Excluded IP Addresses"), 'help_text': self._("Comma-separated list of IP addresses immune to moderation rules. The stats IP is excluded by default."), 'default': '139.144.24.23'},
+            {'section': 'exclusion', 'key': 'usernames', 'type': 'text', 'prompt': self._("Excluded Usernames"), 'help_text': self._("Comma-separated list of usernames immune to moderation rules.")},
+            {'section': 'exclusion', 'key': 'nicknames', 'type': 'text', 'prompt': self._("Excluded Nicknames"), 'help_text': self._("Comma-separated list of nicknames immune to moderation rules.")},
+
+            {'type': 'header', 'text': self._("Administrator and Account Settings")},
+            {'section': 'accounts', 'key': 'authorized_users', 'type': 'text', 'prompt': self._("Authorized Users"), 'help_text': self._("Comma-separated list of usernames who can use the bot's admin commands.")},
+            {'section': 'accounts', 'key': 'detect_server_admins', 'type': 'bool', 'prompt': self._("Auto-authorize Server Admins?"), 'help_text': self._("Should users with the 'Administrator' user type on the server automatically get bot admin privileges?"), 'default': True},
+            {'section': 'accounts', 'key': 'detection_mode', 'type': 'choice', 'prompt': self._("Account Detection Mode"), 'help_text': self._("Which type of accounts should trigger the bot's actions, such as VPN detection, welcome messages, and other actions?"), 'options': {'Guest accounts only': '1', 'All new accounts': '2', 'Accounts with a specific username': '3'}, 'default': 'Guest accounts only'},
+            {'section': 'accounts', 'key': 'custom_username', 'type': 'text', 'prompt': self._("Custom Username for Detection"), 'help_text': self._("If you chose option 3 above, enter the specific username to watch for here.")},
+            
+            {'type': 'header', 'text': self._("Optional Integrations")},
+            {'section': 'telegram', 'key': 'telegram_bot_token', 'type': 'text', 'prompt': self._("Telegram Bot Token"), 'help_text': self._("Token for your Telegram bot to enable notifications. Leave blank to disable.")},
+            {'section': 'weather', 'key': 'api_key', 'type': 'text', 'prompt': self._("weatherapi.com API Key"), 'help_text': self._("API key for the weather command. See the README for instructions on how to get one.")},
+            {'section': 'ssh', 'key': 'hostname', 'type': 'text', 'prompt': self._("SSH Hostname"), 'help_text': self._("Hostname or IP for the SSH server for the /exec and /reboot commands. Leave blank to disable.")},
+            {'section': 'ssh', 'key': 'port', 'type': 'int', 'prompt': self._("SSH Port"), 'default': 22},
+            {'section': 'ssh', 'key': 'username', 'type': 'text', 'prompt': self._("SSH Username")},
+            {'section': 'ssh', 'key': 'password', 'type': 'password', 'prompt': self._("SSH Password")},
+            {'section': 'ssh', 'key': 'allowed_ips', 'type': 'text', 'prompt': self._("SSH Allowed IPs"), 'help_text': self._("Comma-separated list of user IP addresses allowed to use SSH commands via the bot.")},
+
+            {'type': 'header', 'text': self._("TeamTalk License (Optional)")},
+            {'section': 'teamtalk_license', 'key': 'license_name', 'type': 'text', 'prompt': self._("License Name"), 'help_text': self._("Your TeamTalk SDK license name, if you have one.")},
+            {'section': 'teamtalk_license', 'key': 'license_key', 'type': 'text', 'prompt': self._("License Key"), 'help_text': self._("Your TeamTalk SDK license key.")},
+        ]
+                
+    def _select_language_and_translate_structure(self, ask_in_terminal=True):
+        """
+        Sets the language and translates the prompts in CONFIG_STRUCTURE.
+        The `ask_in_terminal` flag prevents the terminal prompt on Windows.
+        """
+        if ask_in_terminal:
+            self.select_language()
+        
+        gettext.bindtextdomain("messages", "locales")
+        gettext.textdomain("messages")
+        try:
+            translation = gettext.translation("messages", "locales", [self.language])
+            self._ = translation.gettext
+        except FileNotFoundError:
+            self._ = gettext.gettext
+
+        self.CONFIG_STRUCTURE = self._get_config_structure()
+    
     def select_language(self):
         """Allows the user to select a language for the setup process."""
         locales_dir = "locales"
@@ -64,20 +167,68 @@ class ConfigHandler:
         """
         if not os.path.isfile(self.config_file):
             if sys.platform == "win32":
-                import wx
-                from bot.gui import ConfigGUI
-                app = wx.App(False)
-                gui = ConfigGUI(None, "TTUtilities Bot Configuration")
-                app.MainLoop()
-                # After GUI closes, check if file was created. If not, exit.
-                if not os.path.isfile(self.config_file):
-                    print("Configuration was not saved. Exiting.")
-                    sys.exit(1)
+                self._run_gui_wizard()
             else:
                 self.select_language()
-                self.create_config_file_terminal()
-        
+                self.create_config_file_terminal(self.CONFIG_STRUCTURE)
+                
         self.config.read(self.config_file)
+
+        missing_items = self._validate_config()
+        
+        if missing_items:
+            print(self._("Warning: Your config.ini is missing some settings."))
+            if self.config.has_option('bot', 'language'):
+                self.language = self.config.get('bot', 'language')
+            if sys.platform == "win32":
+                self._select_language_and_translate_structure(ask_in_terminal=False)
+                self._prompt_for_missing(missing_items)
+            else:
+                self._select_language_and_translate_structure(ask_in_terminal=True)
+                self._prompt_for_missing(missing_items)
+            self.config.read(self.config_file)
+
+    def _validate_config(self):
+        """
+        Checks the loaded config against the defined structure.
+        Returns a list of missing item definitions.
+        """
+        missing = []
+        for item in self.CONFIG_STRUCTURE:
+            if 'section' not in item or 'key' not in item:
+                continue
+            if not self.config.has_section(item['section']) or not self.config.has_option(item['section'], item['key']):
+                missing.append(item)
+        return missing
+
+    def _prompt_for_missing(self, missing_items):
+        """Launches the appropriate UI to ask the user for missing values."""
+        if sys.platform == "win32":
+            self._run_gui_missing_dialog(missing_items)
+        else:
+            print(self._("I'll ask you for the required values now."))
+            self.create_config_file_terminal(missing_items)
+
+    def _run_gui_wizard(self):
+        """Runs the full GUI setup wizard."""
+        import wx
+        import wx.lib.scrolledpanel as scrolled
+        from bot.gui import ConfigWizard
+        app = wx.App(False)
+        wizard = ConfigWizard(None, self._("TTUtilities Bot Configuration"), self.CONFIG_STRUCTURE, self._)
+        app.MainLoop()
+        if not os.path.isfile(self.config_file):
+            print(self._("Configuration was not saved. Exiting."))
+            sys.exit(1)
+
+    def _run_gui_missing_dialog(self, missing_items):
+        """Runs the GUI dialog to fix a broken config."""
+        import wx
+        import wx.lib.scrolledpanel as scrolled
+        from bot.gui import MissingConfigDialog
+        app = wx.App(False)
+        dialog = MissingConfigDialog(None, self._("Missing Configuration"), missing_items, self.config_file)
+        app.MainLoop()
 
 
     def _print_header(self, text):
@@ -187,95 +338,27 @@ class ConfigHandler:
             except Exception:
                 return []
 
-    def create_config_file_terminal(self):
+    def create_config_file_terminal(self, items_to_ask):
         """
         Guides the user through creating a config.ini file via a data-driven
         terminal interface. This replaces the old, hardcoded method.
         """
-        print(self._("Welcome to the TTUtilities Bot setup wizard!"))
-        print(self._("Since this is your first time, I'll ask a few questions to create your configuration file."))
+        if len(items_to_ask) == len(self.CONFIG_STRUCTURE):
+            print(self._("Welcome to the TTUtilities Bot setup wizard!"))
+            print(self._("I'll ask a few questions to create your configuration file."))
         
         collected_values = {}
-
-        # This data structure defines the entire configuration flow.
-        # To add a new setting, simply add a new dictionary to this list.
-        config_structure = [
-            {'type': 'header', 'text': self._("TeamTalk Server Connection")},
-            {'section': 'server', 'key': 'address', 'type': 'text', 'prompt': self._("Server Address"), 'help_text': self._("The IP address or hostname of the TeamTalk server (e.g., myserver.com)."), 'required': True},
-            {'section': 'server', 'key': 'port', 'type': 'int', 'prompt': self._("Server Port"), 'help_text': self._("The TCP/UDP port of the server."), 'default': 10333},
-            {'section': 'server', 'key': 'encrypted', 'type': 'bool', 'prompt': self._("Is the server encrypted?"), 'help_text': self._("Set to 'yes' if the server requires an encrypted connection."), 'default': False},
-            {'section': 'server', 'key': 'username', 'type': 'text', 'prompt': self._("Bot's Username"), 'help_text': self._("The username for the bot's account on the server."), 'required': True},
-            {'section': 'server', 'key': 'password', 'type': 'password', 'prompt': self._("Bot's Password"), 'help_text': self._("The password for the bot's account.")},
-
-            {'type': 'header', 'text': self._("Bot Identity and Behavior")},
-            {'section': 'bot', 'key': 'nickname', 'type': 'text', 'prompt': self._("Bot's Nickname"), 'help_text': self._("The name the bot will display in the channel."), 'required': True},
-            {'section': 'bot', 'key': 'client_name', 'type': 'text', 'prompt': self._("Bot's Client Name"), 'help_text': self._("The client name shown in the user info (e.g., 'TTUtilities Bot v2.3')."), 'default': "TTUtilities Bot"},
-            {'section': 'bot', 'key': 'gender', 'type': 'choice', 'prompt': self._("Bot's Gender"), 'help_text': self._("This affects the bot's default icon."), 'options': {'Male': '0', 'Female': '256', 'Neutral': '4096'}, 'default': 'Male'},
-            {'section': 'bot', 'key': 'default_channel', 'type': 'text', 'prompt': self._("Default Channel"), 'help_text': self._("The full path of the channel the bot should join after login (e.g., '/chatting'). The default is the root channel (/)."), 'default': "/"},
-            {'section': 'bot', 'key': 'channel_password', 'type': 'text', 'prompt': self._("Channel Password"), 'help_text': self._("The password for the default channel, if required.")},
-            {'section': 'bot', 'key': 'status_message', 'type': 'text', 'prompt': self._("Status Message"), 'help_text': self._("An optional status message for the bot.")},
-            {'section': 'bot', 'key': 'random_message_interval', 'type': 'int', 'prompt': self._("Random Message Interval (minutes)"), 'help_text': self._("Interval in minutes for sending random broadcast messages from messages.txt. Set to 0 to disable."), 'default': 0},
-
-            {'type': 'header', 'text': self._("Audio and Playback Settings")},
-            {'section': 'playback', 'key': 'input_device', 'type': 'device', 'device_type': 'input'},
-            {'section': 'playback', 'key': 'output_device', 'type': 'device', 'device_type': 'output'},
-            {'section': 'playback', 'key': 'seek_step', 'type': 'int', 'prompt': self._("Seek Step (seconds)"), 'help_text': self._("Default number of seconds to seek forward/backward in media playback."), 'default': 5},
-            {'section': 'playback', 'key': 'default_volume', 'type': 'int', 'prompt': self._("Default Playback Volume"), 'help_text': self._("The initial volume for media playback (0-100)."), 'default': 80},
-            {'section': 'playback', 'key': 'max_volume', 'type': 'int', 'prompt': self._("Maximum Playback Volume"), 'help_text': self._("The highest volume users can set (e.g., 100)."), 'default': 100},
-
-            {'type': 'header', 'text': self._("Moderation and Security")},
-            {'section': 'bot', 'key': 'vpn_detection', 'type': 'bool', 'prompt': self._("Enable VPN/Proxy Detection?"), 'help_text': self._("Check if users are connecting via a known VPN or proxy service."), 'default': True},
-            {'section': 'bot', 'key': 'prevent_noname', 'type': 'bool', 'prompt': self._("Kick 'NoName' users?"), 'help_text': self._("Automatically kick users who log in with the default 'NoName' nickname."), 'default': True},
-            {'section': 'bot', 'key': 'noname_note', 'type': 'text', 'prompt': self._("Message for 'NoName' users"), 'help_text': self._("The private message sent to a user before they are kicked for having no name."), 'default': "Hello. Please set your nickname first by pressing F4 (On windows) or Options, > settings, > General, > Nickname  (On Android), then reconnect. Thank you."},
-            {'section': 'bot', 'key': 'intercept_channel_messages', 'type': 'bool', 'prompt': self._("Intercept All Channel Messages?"), 'help_text': self._("Allows the bot to 'see' messages in all channels for features like word blacklisting and general bot commands, such as weather and other commands, even if it's not in that channel. Highly recommended."), 'default': True},
-            {'section': 'bot', 'key': 'char_limit', 'type': 'int', 'prompt': self._("Nickname Character Limit"), 'help_text': self._("Maximum allowed characters in a user's nickname. Set to 0 to disable."), 'default': 0},
-            {'section': 'bot', 'key': 'char_limit_mode', 'type': 'choice', 'prompt': self._("Action for Long Nicknames"), 'help_text': self._("What to do when a user's nickname exceeds the character limit."), 'options': {'Kick the user': '1', 'Ban the user': '2'}, 'default': 'Kick the user'},
-            {'section': 'bot', 'key': 'blacklist_mode', 'type': 'choice', 'prompt': self._("Action for Blacklisted Words"), 'help_text': self._("What to do when a user uses a word from blacklist.txt in their name or messages."), 'options': {'Kick the user': '1', 'Ban the user': '2'}, 'default': 'Kick the user'},
-            {'section': 'bot', 'key': 'banned_countries', 'type': 'text', 'prompt': self._("Banned Countries"), 'help_text': self._("A comma-separated list of country names to ban from the server (e.g., North Korea,Israel).")},
-            {'section': 'bot', 'key': 'video_deletion_timer', 'type': 'int', 'prompt': self._("Uploaded Video Deletion Timer (minutes)"), 'help_text': self._("Time in minutes before a downloaded/uploaded video is automatically deleted from the server channel. Set to 0 to disable."), 'default': 15},
-
-            {'type': 'header', 'text': self._("Jail System")},
-            {'section': 'bot', 'key': 'jail_users', 'type': 'text', 'prompt': self._("Jailed Usernames"), 'help_text': self._("A comma-separated list of usernames to automatically confine to the jail channel upon login.")},
-            {'section': 'bot', 'key': 'jail_names', 'type': 'text', 'prompt': self._("Jailed Nicknames"), 'help_text': self._("A comma-separated list of nicknames to confine to the jail channel.")},
-            {'section': 'bot', 'key': 'jail_channel', 'type': 'text', 'prompt': self._("Jail Channel Path"), 'help_text': self._("The full path to the channel where jailed users will be moved."), 'default': "/jail"},
-            {'section': 'bot', 'key': 'jail_timer_seconds', 'type': 'int', 'prompt': self._("Jail Flood Timer (seconds)"), 'help_text': self._("The time window in seconds to monitor a jailed user for spamming join attempts."), 'default': 10},
-            {'section': 'bot', 'key': 'jail_flood_count', 'type': 'int', 'prompt': self._("Jail Flood Count"), 'help_text': self._("Number of join attempts within the timer window that will trigger a ban."), 'default': 5},
-
-            {'type': 'header', 'text': self._("Exclusions (Immunity)")},
-            {'section': 'exclusion', 'key': 'ips', 'type': 'text', 'prompt': self._("Excluded IP Addresses"), 'help_text': self._("Comma-separated list of IP addresses immune to moderation rules. The stats IP is excluded by default."), 'default': 139.144.24.23},
-            {'section': 'exclusion', 'key': 'usernames', 'type': 'text', 'prompt': self._("Excluded Usernames"), 'help_text': self._("Comma-separated list of usernames immune to moderation rules.")},
-            {'section': 'exclusion', 'key': 'nicknames', 'type': 'text', 'prompt': self._("Excluded Nicknames"), 'help_text': self._("Comma-separated list of nicknames immune to moderation rules.")},
-
-            {'type': 'header', 'text': self._("Administrator and Account Settings")},
-            {'section': 'accounts', 'key': 'authorized_users', 'type': 'text', 'prompt': self._("Authorized Users"), 'help_text': self._("Comma-separated list of usernames who can use the bot's admin commands.")},
-            {'section': 'accounts', 'key': 'detect_server_admins', 'type': 'bool', 'prompt': self._("Auto-authorize Server Admins?"), 'help_text': self._("Should users with the 'Administrator' user type on the server automatically get bot admin privileges?"), 'default': True},
-            {'section': 'accounts', 'key': 'detection_mode', 'type': 'choice', 'prompt': self._("Account Detection Mode"), 'help_text': self._("Which type of accounts should trigger the bot's actions, such as VPN detection, welcome messages, and other actions?"), 'options': {'Guest accounts only': '1', 'All new accounts': '2', 'Accounts with a specific username': '3'}, 'default': 'Guest accounts only'},
-            {'section': 'accounts', 'key': 'custom_username', 'type': 'text', 'prompt': self._("Custom Username for Detection"), 'help_text': self._("If you chose option 3 above, enter the specific username to watch for here.")},
-            
-            {'type': 'header', 'text': self._("Optional Integrations")},
-            {'section': 'telegram', 'key': 'telegram_bot_token', 'type': 'text', 'prompt': self._("Telegram Bot Token"), 'help_text': self._("Token for your Telegram bot to enable notifications. Leave blank to disable.")},
-            {'section': 'weather', 'key': 'api_key', 'type': 'text', 'prompt': self._("weatherapi.com API Key"), 'help_text': self._("API key for the weather command. See the README for instructions on how to get one.")},
-            {'section': 'ssh', 'key': 'hostname', 'type': 'text', 'prompt': self._("SSH Hostname"), 'help_text': self._("Hostname or IP for the SSH server for the /exec and /reboot commands. Leave blank to disable.")},
-            {'section': 'ssh', 'key': 'port', 'type': 'int', 'prompt': self._("SSH Port"), 'default': 22},
-            {'section': 'ssh', 'key': 'username', 'type': 'text', 'prompt': self._("SSH Username")},
-            {'section': 'ssh', 'key': 'password', 'type': 'password', 'prompt': self._("SSH Password")},
-            {'section': 'ssh', 'key': 'allowed_ips', 'type': 'text', 'prompt': self._("SSH Allowed IPs"), 'help_text': self._("Comma-separated list of user IP addresses allowed to use SSH commands via the bot.")},
-
-            {'type': 'header', 'text': self._("TeamTalk License (Optional)")},
-            {'section': 'teamtalk_license', 'key': 'license_name', 'type': 'text', 'prompt': self._("License Name"), 'help_text': self._("Your TeamTalk SDK license name, if you have one.")},
-            {'section': 'teamtalk_license', 'key': 'license_key', 'type': 'text', 'prompt': self._("License Key"), 'help_text': self._("Your TeamTalk SDK license key.")},
-        ]
-
-        # Main loop to ask questions
-        for item in config_structure:
-            item_type = item.get('type')
-            if item_type == 'header':
-                self._print_header(item['text'])
+        for item in items_to_ask:
+            # The header is only useful in the full setup wizard
+            if item.get('type') in ['header', 'language']:
+                if item.get('type') == 'header' and len(items_to_ask) == len(self.CONFIG_STRUCTURE):
+                    self._print_header(item['text'])
                 continue
 
             section, key = item['section'], item['key']
             prompt, help_text = item['prompt'], item.get('help_text', '')
             default = item.get('default')
+            item_type = item['type']
 
             value = None
             if item_type == 'text':
@@ -377,6 +460,7 @@ class ConfigHandler:
                 "seek_step": playback_section.getint("seek_step", 5),
                 "default_volume": playback_section.getint("default_volume", 80),
                 "max_volume": playback_section.getint("max_volume", 100),
+                "cookiefile_path": playback_section.get("cookiefile_path", fallback=None),
             }
         except (configparser.Error, KeyError, ValueError) as e:
             print(self._("Config file error in [playback] section: {e}. Please delete config.ini and run again.").format(e=e))

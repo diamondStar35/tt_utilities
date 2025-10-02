@@ -37,7 +37,8 @@ class TTUtilities(TeamTalk):
         self.weather_config = self.config_handler.get_weather_config()
         self.ssh_config = self.config_handler.get_ssh_config()
         self.teamtalk_license_config = self.config_handler.get_teamtalk_license_config()
-        self.cookiefile = cookiefile
+        self.cookiefile = cookiefile or self.playback_config.get("cookiefile_path")
+        
         self.io_pool = None
         self.quick_task_pool = None
         self.player = Player(self.config_handler, cookiefile=self.cookiefile)
