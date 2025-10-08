@@ -54,23 +54,24 @@ class UserManager:
             del self.user_messages[username]
         
         # 3. Handle Welcome Message and Location-based Actions
-        country, city = self.get_user_location(user.nUserID)
-        if country and city:
-            welcome_messages = [
-                self._("Welcome, {nickname} from {country}!").format(nickname=ttstr(user.szNickname), country=country),
-                self._("Ahoy there, {nickname} from {country}! Welcome aboard!").format(nickname=ttstr(user.szNickname), country=country),
-                self._("Greetings, {nickname} of {country}! We're glad to have you here.").format(nickname=ttstr(user.szNickname), country=country),
-                self._("Howdy, {nickname}! Welcome from {country}.").format(nickname=ttstr(user.szNickname), country=country),
-                self._("Whoa! {nickname} just arrived from {country}! Let's party!").format(nickname=ttstr(user.szNickname), country=country),
-                self._("Look who's here! {nickname} from {country} just logged in!").format(nickname=ttstr(user.szNickname), country=country),
-                self._("Good vibes only for {nickname} from {country}! Welcome, my friend!").format(nickname=ttstr(user.szNickname), country=country),
-                self._("Surprise, surprise! It's {nickname} from {country}! Glad to have you!").format(nickname=ttstr(user.szNickname), country=country),
-                self._("Let the fun begin! Welcome, {nickname} from the land of {country}!").format(nickname=ttstr(user.szNickname), country=country)
-            ]
+        if self.bot.bot_config.get("welcome_broadcast", True):
+            country, city = self.get_user_location(user.nUserID)
+            if country and city:
+                welcome_messages = [
+                    self._("Welcome, {nickname} from {country}!").format(nickname=ttstr(user.szNickname), country=country),
+                    self._("Ahoy there, {nickname} from {country}! Welcome aboard!").format(nickname=ttstr(user.szNickname), country=country),
+                    self._("Greetings, {nickname} of {country}! We're glad to have you here.").format(nickname=ttstr(user.szNickname), country=country),
+                    self._("Howdy, {nickname}! Welcome from {country}.").format(nickname=ttstr(user.szNickname), country=country),
+                    self._("Whoa! {nickname} just arrived from {country}! Let's party!").format(nickname=ttstr(user.szNickname), country=country),
+                    self._("Look who's here! {nickname} from {country} just logged in!").format(nickname=ttstr(user.szNickname), country=country),
+                    self._("Good vibes only for {nickname} from {country}! Welcome, my friend!").format(nickname=ttstr(user.szNickname), country=country),
+                    self._("Surprise, surprise! It's {nickname} from {country}! Glad to have you!").format(nickname=ttstr(user.szNickname), country=country),
+                    self._("Let the fun begin! Welcome, {nickname} from the land of {country}!").format(nickname=ttstr(user.szNickname), country=country)
+                ]
 
-            self.bot.send_broadcast_message(random.choice(welcome_messages))
-        else:
-            self.bot.send_broadcast_message(self._("{nickname} has joined the server").format(nickname=nickname))
+                self.bot.send_broadcast_message(random.choice(welcome_messages))
+            else:
+                self.bot.send_broadcast_message(self._("{nickname} has joined the server").format(nickname=nickname))
 
     def on_user_parted(self, user):
         """Cleans up all data associated with a user when they leave or log out."""

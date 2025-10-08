@@ -53,6 +53,7 @@ class ConfigHandler:
             {'section': 'bot', 'key': 'default_channel', 'type': 'text', 'prompt': self._("Default Channel"), 'help_text': self._("The full path of the channel the bot should join after login (e.g., '/chatting'). The default is the root channel (/)."), 'default': "/"},
             {'section': 'bot', 'key': 'channel_password', 'type': 'text', 'prompt': self._("Channel Password"), 'help_text': self._("The password for the default channel, if required.")},
             {'section': 'bot', 'key': 'status_message', 'type': 'text', 'prompt': self._("Status Message"), 'help_text': self._("An optional status message for the bot.")},
+            {'section': 'bot', 'key': 'welcome_broadcast', 'type': 'bool', 'prompt': self._("Send Welcome Broadcast?"), 'help_text': self._("Send a public welcome message when a user logs in."), 'default': True},
             {'section': 'bot', 'key': 'random_message_interval', 'type': 'int', 'prompt': self._("Random Message Interval (minutes)"), 'help_text': self._("Interval in minutes for sending random broadcast messages from messages.txt. Set to 0 to disable."), 'default': 0},
 
             {'type': 'header', 'text': self._("Audio and Playback Settings")},
@@ -431,6 +432,7 @@ class ConfigHandler:
                 "default_channel": bot_section.get("default_channel", "/"),
                 "channel_password": bot_section.get("channel_password", ""),
                 "status_message": bot_section.get("status_message", ""),
+                "welcome_broadcast": bot_section.getboolean("welcome_broadcast", True),
                 "vpn_detection": bot_section.getboolean("vpn_detection", True),
                 "prevent_noname": bot_section.getboolean("prevent_noname", True),
                 "noname_note": bot_section.get("noname_note", ""),
@@ -540,6 +542,7 @@ class ConfigHandler:
                 "default_channel": str(bot_config['default_channel']),
                 "channel_password": str(bot_config['channel_password']),
                 "status_message": str(bot_config["status_message"]),
+                "welcome_broadcast": str(bot_config.get('welcome_broadcast', True)),
                 "vpn_detection": str(bot_config['vpn_detection']),
                 "prevent_noname": str(bot_config['prevent_noname']),
                 "noname_note": str(bot_config['noname_note']),

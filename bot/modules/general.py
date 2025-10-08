@@ -16,6 +16,7 @@ class GeneralCog:
         command_handler.register_command('weather', self.handle_weather_command, help_text=self._("Gets the current weather info for your location or a specified user. Usage: /weather <nickname (Optional)>"))
         command_handler.register_command('search', self.handle_search_command, help_text=self._("Searches Wikipedia for a summary. Usage: /search <query>"))
         command_handler.register_command('h', self.handle_help_command, help_text=self._("Shows this help message."))
+        command_handler.register_command('help', self.handle_help_command, help_text=self._("Shows this help message."))
         command_handler.register_command('myinfo', self.handle_myinfo_command, help_text=self._("Shows your user account information."))
 
     def handle_weather_command(self, textmessage, *args):
@@ -118,7 +119,7 @@ class GeneralCog:
         
         self.bot.privateMessage(user_id, self._("--- Available Commands ---"))
         # Sort commands alphabetically for readability
-        commands = self.bot.command_handler.commands.items()
+        commands = sorted(self.bot.command_handler.commands.items())
         for name, command in commands:
             # If the command is admin-only and the user is not an admin, skip it
             if command.admin_only and not is_admin:

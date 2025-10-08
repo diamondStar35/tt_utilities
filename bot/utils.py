@@ -10,6 +10,15 @@ import traceback
 from concurrent.futures import ThreadPoolExecutor
 
 
+class ShutdownSignal(Exception):
+    """Custom exception to signal a clean shutdown from a command."""
+    pass
+
+class RestartSignal(Exception):
+    """Custom exception to signal a clean restart from a command."""
+    pass
+
+
 class BotUtils:
     """
     A class for standalone utility functions used by the bot.
