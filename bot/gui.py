@@ -117,7 +117,7 @@ class ConfigWizard(wx.Frame):
             return # Validation failed
         
         if self.current_page == 0:
-            key = self.pages[0]['fields'][0]['key']
+            key = ('bot', 'language')
             self.language = self.values.get(key, 'en')
                 
         if self.current_page < len(self.pages) - 1:
@@ -140,31 +140,31 @@ class ConfigWizard(wx.Frame):
         """Reads values from the current page's controls into self.values."""
         page_data = self.pages[self.current_page]
         for field in page_data['fields']:
-            if 'key' not in field:
+            if 'section' not in field or 'key' not in field:
                 continue
                 
-            key = field['key']
-            control = self.controls.get(key)
+            unique_key = (field['section'], field['key'])
+            control = self.controls.get(unique_key)
             if not control: continue
 
             if field['type'] == 'bool':
-                self.values[key] = control.GetValue()
+                self.values[unique_key] = control.GetValue()
             elif field['type'] == 'radio':
-                self.values[key] = control.GetStringSelection()
+                self.values[unique_key] = control.GetStringSelection()
             elif field['type'] in ('text', 'password', 'int'):
                 val_str = control.GetValue()
                 if field.get('required') and not val_str:
                     wx.MessageBox(self._("'{}' is a required field.").format(self._(field['prompt'])), self._("Input Error"), wx.OK | wx.ICON_ERROR)
                     control.SetFocus()
                     return False
-                self.values[key] = val_str
+                self.values[unique_key] = val_str
             elif field['type'] in ('device', 'language'):
-                self.values[key] = control.GetClientData(control.GetSelection())
+                self.values[unique_key] = control.GetClientData(control.GetSelection())
             elif field['type'] == 'choice':
                 selection_index = control.GetSelection()
                 if selection_index != wx.NOT_FOUND:
-                    original_key = list(field['options'].keys())[selection_index]
-                    self.values[key] = field['options'][original_key]
+                    original_key_str = list(field['options'].keys())[selection_index]
+                    self.values[unique_key] = field['options'][original_key_str]
 
         return True
 
@@ -175,7 +175,8 @@ class ConfigWizard(wx.Frame):
             if 'section' not in field or 'key' not in field:
                 continue
             section, key = field['section'], field['key']
-            value = self.values.get(key, field.get('default', ''))
+            unique_key = (section, key)
+            value = self.values.get(unique_key, field.get('default', ''))
 
             if not config.has_section(section):
                 config.add_section(section)
@@ -191,7 +192,12 @@ class ConfigWizard(wx.Frame):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         control = None
         field_type = field['type']
-        key = field['key']
+        
+        if 'section' not in field or 'key' not in field:
+            # Handle non-standard fields like headers if necessary
+            return None, sizer
+
+        unique_key = (field['section'], field['key'])
         default = field.get('default', '')
 
         if field_type == 'bool':
@@ -224,7 +230,7 @@ class ConfigWizard(wx.Frame):
                 sizer.Add(control, 2, wx.EXPAND | wx.ALL, 5)
 
         if control:
-            self.controls[key] = control
+            self.controls[unique_key] = control
         return control, sizer
 
     def _populate_languages(self, combo):
@@ -309,30 +315,31 @@ class MissingConfigDialog(wx.Dialog):
 
         values = {}
         for item in self.missing_items:
-            key = item['key']
-            control = self.controls.get(key)
+            unique_key = (item['section'], item['key'])
+            control = self.controls.get(unique_key)
             if not control: continue
 
             if item['type'] == 'bool':
-                values[key] = control.GetValue()
+                values[unique_key] = control.GetValue()
             elif item['type'] in ('text', 'password', 'int'):
                 val_str = control.GetValue()
                 if item.get('required') and not val_str:
                     wx.MessageBox(self._("'{}' is a required field.").format(self._(item['prompt'])), self._("Input Error"), wx.OK | wx.ICON_ERROR)
                     control.SetFocus()
                     return
-                values[key] = val_str
+                values[unique_key] = val_str
             elif item['type'] in ('device', 'language'):
-                values[key] = control.GetClientData(control.GetSelection())
+                values[unique_key] = control.GetClientData(control.GetSelection())
             elif item['type'] == 'choice':
                 selection_index = control.GetSelection()
                 if selection_index != wx.NOT_FOUND:
-                    original_key = list(item['options'].keys())[selection_index]
-                    values[key] = item['options'][original_key]
+                    original_key_str = list(item['options'].keys())[selection_index]
+                    values[unique_key] = item['options'][original_key_str]
                 
         for item in self.missing_items:
             section, key = item['section'], item['key']
-            value = values.get(key)
+            unique_key = (section, key)
+            value = values.get(unique_key)
             if value is not None:
                 if not config.has_section(section):
                     config.add_section(section)

@@ -13,6 +13,7 @@ from bot.user_manager import UserManager
 import gettext
 import logging
 import time
+import traceback
 from datetime import datetime
 import os, sys, re, configparser, argparse
 import random
@@ -96,16 +97,35 @@ class TTUtilities(TeamTalk):
 
     def shutdown(self):
         """Cleanly shuts down all resources used by the bot instance."""
+        print("Shutdown sequence started.")
         try:
-            self.player.terminate()            
-            self.disconnect()            
+            print("Terminating media player...")
+            self.player.terminate()
+            print("Media player terminated.")
+
+            print("Disconnecting from TeamTalk server...")
+            self.disconnect()
+            print("Disconnected from server.")
+
+            print("Closing TeamTalk instance...")
             self.closeTeamTalk()
-            self.io_pool.shutdown(wait=False)
-            self.quick_task_pool.shutdown(wait=False)
+            print("TeamTalk instance closed.")
+
+            if self.io_pool:
+                print("Shutting down IO thread pool...")
+                self.io_pool.shutdown(wait=False)
+                print("IO thread pool shutdown initiated.")
+            
+            if self.quick_task_pool:
+                print("Shutting down quick task thread pool...")
+                self.quick_task_pool.shutdown(wait=False)
+                print("Quick task thread pool shutdown initiated.")
+
             print("Shutdown complete.")
         except Exception as e:
             logging.error(f"Error during shutdown: {e}")
             print(f"An error occurred during shutdown: {e}")
+            traceback.print_exc()
 
     def _register_cogs(self):
         """Initializes and registers all command cogs."""

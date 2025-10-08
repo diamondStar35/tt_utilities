@@ -1,5 +1,5 @@
 from TeamTalk5 import BanType, BannedUser, UserAccount, UserType, TextMsgType, TextMessage, ttstr
-from bot.utils import BotUtils as utils
+from bot.utils import BotUtils as utils, ShutdownSignal, RestartSignal
 import TeamTalk5 as teamtalk
 import time
 from threading import Thread
@@ -34,6 +34,22 @@ class AdminCog:
         command_handler.register_command('cs', self.handle_change_status, admin_only=True, help_text=self._("Changes the bot's status message. Usage: /cs <new_status>"))
         command_handler.register_command('cg', self.handle_change_gender, admin_only=True, help_text=self._("Changes the bot's gender. Usage: /cg <m|f|n>. send /cg without arguments for more details."))
         command_handler.register_command('new', self.handle_new_account_command, admin_only=True, help_text=self._("Creates a new user account. Usage: /new <user> <pass> [rights]. the rights is a list of user rights separated by spaces for each number."))
+        command_handler.register_command('shutdown', self.handle_shutdown_command, admin_only=True, help_text=self._("Shuts down the bot."))
+        command_handler.register_command('sd', self.handle_shutdown_command, admin_only=True, help_text=self._("Alias for /shutdown."))
+        command_handler.register_command('restart', self.handle_restart_command, admin_only=True, help_text=self._("Restarts the bot."))
+        command_handler.register_command('rs', self.handle_restart_command, admin_only=True, help_text=self._("Alias for /restart."))
+
+    def handle_shutdown_command(self, textmessage, *args):
+        """Handles the command to shut down the bot."""
+        self.bot.privateMessage(textmessage.nFromUserID, self._("Shutting down..."))
+        print("\nShutdown requested by admin command.")
+        raise ShutdownSignal
+
+    def handle_restart_command(self, textmessage, *args):
+        """Handles the command to restart the bot."""
+        self.bot.privateMessage(textmessage.nFromUserID, self._("Restarting..."))
+        print("\nRestart requested by admin command.")
+        raise RestartSignal
 
     def handle_user_login_checks(self, user):
         """Handles all administrative checks when a user logs in."""
